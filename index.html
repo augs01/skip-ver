@@ -41,5 +41,24 @@
             以上内嵌的是百度首页，您可以直接在此进行搜索
         </p>
     </div>
+    <script>
+        // 使用现代的fetch API（HTML5）发送GET请求
+        fetch('https://nprapi.chkjnotary.com/health', {
+            method: 'GET',
+            credentials: 'include'  // 相当于withCredentials: true
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+        });
+    </script>
 </body>
 </html>
