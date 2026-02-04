@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -14,17 +15,27 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
 
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"></script>
+  <script>
+    // 配置 PDF.js worker
+    if (window['pdfjsLib']) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js';
+    }
+  </script>
+
   <!-- 配置 Tailwind -->
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            notary: '#1e3a8a', // 公证蓝
-            gold: '#d97706', // 国徽金
-            seal: '#dc2626', // 国徽红
-            official: '#374151', // 正式灰
-            paper: '#f9f7f4', // 公文纸色
+            notary: '#1e3a8a',
+            gold: '#d97706',
+            seal: '#dc2626',
+            official: '#374151',
+            paper: '#f9f7f4',
           },
           fontFamily: {
             song: ['"Noto Serif SC"', 'serif'],
@@ -165,35 +176,6 @@
         }
       }
 
-      /* PDF 容器与预览区域 */
-      .pdf-viewer {
-        width: 100%;
-        height: 70vh;
-        border: 1px solid #d1d5db;
-        border-radius: 8px;
-        background: #f9fafb;
-        overflow: hidden; /* 防止内部撑开导致页面左右位移 */
-      }
-      .pdf-fallback {
-        width: 100%;
-        height: 70vh;
-        border: 2px dashed #d1d5db;
-        border-radius: 8px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: #f9fafb;
-        overflow: hidden;
-      }
-      .pdf-loading {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 200px;
-      }
-
       /* 防止整页左右位移 */
       html,
       body {
@@ -202,17 +184,84 @@
         overflow-x: hidden;
       }
 
-      /* 结果弹窗内的 PDF 区域高度自适应 */
-      #pdfContainer {
-        box-sizing: border-box;
-        max-width: 100%;
+      /* PDF.js 容器 */
+      .pdfjs-wrapper {
+        width: 100%;
+        height: 70vh;
+        max-height: 80vh;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
         overflow: hidden;
       }
 
+      .pdfjs-toolbar {
+        flex-shrink: 0;
+        padding: 0.5rem 0.75rem;
+        background: #f3f4f6;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+
+      .pdfjs-toolbar-left,
+      .pdfjs-toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .pdfjs-pages {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0.75rem;
+        background: #e5e7eb;
+      }
+
+      .pdfjs-page-canvas {
+        display: block;
+        margin: 0 auto 0.75rem auto;
+        background: white;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        border-radius: 4px;
+        max-width: 100%;
+        height: auto;
+      }
+
+      .pdfjs-page-number {
+        text-align: center;
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+      }
+
+      .pdfjs-btn {
+        @apply inline-flex items-center justify-center px-2 py-1 rounded text-xs sm:text-sm font-medium border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition;
+      }
+
+      .pdfjs-btn-icon {
+        @apply w-8 h-8 inline-flex items-center justify-center rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 transition;
+      }
+
+      .pdfjs-zoom-input {
+        @apply w-20 px-2 py-1 border border-gray-300 rounded text-xs sm:text-sm;
+      }
+
+      .pdfjs-disabled {
+        opacity: 0.5;
+        pointer-events: none;
+      }
+
       @media (max-width: 640px) {
-        .pdf-viewer,
-        .pdf-fallback {
-          height: 60vh;
+        .pdfjs-wrapper {
+          height: 75vh;
+          max-height: 80vh;
         }
       }
     }
@@ -280,7 +329,7 @@
       </div>
     </div>
 
-    <!-- 布局：移动端垂直，桌面端左右分栏 -->
+    <!-- 布局 -->
     <div class="mobile-stack lg:grid lg:grid-cols-5 lg:gap-6">
       <!-- 左侧/上部：身份验证区 -->
       <div
@@ -425,7 +474,7 @@
               class="text-gray-500 leading-relaxed text-sm sm:text-base max-w-md mx-auto px-2"
             >
               请在左侧完成身份验证后，点击查询按钮获取您的债务履行核查函 PDF 文件。
-              查询结果将以弹窗形式展示 PDF 文档，支持在线预览和下载。
+              查询结果将以弹窗形式展示 PDF 文档，支持在线预览、翻页、缩放和下载，适配电脑、手机和平板。
             </p>
           </div>
         </div>
@@ -486,7 +535,7 @@
     </div>
   </div>
 
-  <!-- 结果弹窗 - PDF 版本 -->
+  <!-- 结果弹窗 - PDF.js 版本 -->
   <div
     id="resultModal"
     class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop flex items-center justify-center z-50 hidden fade-in p-2 sm:p-4"
@@ -515,75 +564,62 @@
         </button>
       </div>
 
-      <!-- 弹窗内容 - PDF 查看器 -->
-      <div class="p-4 flex-1 overflow-hidden">
-        <div id="pdfContainer" class="pdf-viewer">
-          <!-- PDF 加载状态 -->
-          <div id="pdfLoading" class="pdf-loading">
-            <div class="loading-spinner mb-4"></div>
-            <h4 class="text-lg font-semibold text-gray-700 mb-2">
-              正在加载 PDF 文档...
-            </h4>
-            <p class="text-gray-500 text-sm">
-              请稍候，文档加载可能需要一些时间
-            </p>
-            <div class="mt-4 w-full bg-gray-200 rounded-full h-2">
-              <div
-                id="pdfProgress"
-                class="bg-notary h-2 rounded-full"
-                style="width: 0%"
-              ></div>
+      <!-- 弹窗内容 - PDF.js 查看器 -->
+      <div class="p-4 flex-1 overflow-hidden flex flex-col gap-3">
+        <div id="pdfWrapper" class="pdfjs-wrapper">
+          <!-- 工具栏 -->
+          <div class="pdfjs-toolbar">
+            <div class="pdfjs-toolbar-left">
+              <button id="prevPageBtn" class="pdfjs-btn-icon" title="上一页">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button id="nextPageBtn" class="pdfjs-btn-icon" title="下一页">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+              <span class="text-xs sm:text-sm text-gray-700">
+                第
+                <input
+                  id="currentPageInput"
+                  type="number"
+                  min="1"
+                  value="1"
+                  class="w-12 px-1 py-0.5 border border-gray-300 rounded text-xs text-center"
+                />
+                页 / <span id="totalPages">1</span> 页
+              </span>
+            </div>
+            <div class="pdfjs-toolbar-right">
+              <button id="zoomOutBtn" class="pdfjs-btn-icon" title="缩小">
+                <i class="fas fa-search-minus"></i>
+              </button>
+              <button id="zoomInBtn" class="pdfjs-btn-icon" title="放大">
+                <i class="fas fa-search-plus"></i>
+              </button>
+              <select id="zoomSelect" class="pdfjs-zoom-input">
+                <option value="0.8">80%</option>
+                <option value="1" selected>100%</option>
+                <option value="1.25">125%</option>
+                <option value="1.5">150%</option>
+                <option value="2">200%</option>
+              </select>
             </div>
           </div>
 
-          <!-- PDF iframe 容器 -->
-          <iframe
-            id="pdfViewer"
-            src=""
-            width="100%"
-            height="100%"
-            style="display: none; border: none; max-width: 100%;"
-            title="债务履行核查函 PDF 文档"
-          ></iframe>
-
-          <!-- PDF 加载失败时的备用方案 -->
-          <div
-            id="pdfFallback"
-            class="pdf-fallback"
-            style="display: none;"
-          >
-            <i
-              class="fas fa-exclamation-triangle text-4xl text-yellow-500 mb-4"
-            ></i>
-            <h4 class="text-lg font-semibold text-gray-700 mb-2">
-              PDF 文档加载失败
-            </h4>
-            <p class="text-gray-500 text-sm mb-4 text-center px-4">
-              PDF 文档暂时无法在浏览器中显示，您可以尝试以下方式：
-            </p>
-            <div class="flex flex-col sm:flex-row gap-3">
-              <a
-                id="directDownloadBtn"
-                href="#"
-                class="bg-notary hover:bg-notary/90 text-white font-semibold py-2 px-4 rounded-md transition-colors flex items-center justify-center"
-              >
-                <i class="fas fa-download mr-2"></i>
-                直接下载 PDF
-              </a>
-              <button
-                id="retryLoadBtn"
-                class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md transition-colors flex items-center justify-center"
-              >
-                <i class="fas fa-redo mr-2"></i>
-                重新加载
-              </button>
+          <!-- PDF 页面区域 -->
+          <div id="pdfPages" class="pdfjs-pages">
+            <div
+              id="pdfLoading"
+              class="flex flex-col items-center justify-center h-full text-gray-500 text-sm"
+            >
+              <div class="loading-spinner mb-3"></div>
+              <p>正在加载 PDF 文档，请稍候...</p>
             </div>
           </div>
         </div>
 
         <!-- 操作按钮组 -->
         <div
-          class="flex flex-col sm:flex-row gap-3 justify-center mt-4 flex-shrink-0"
+          class="flex flex-col sm:flex-row gap-3 justify-center flex-shrink-0"
         >
           <button
             id="downloadBtn"
@@ -658,7 +694,6 @@
   <script>
     // DOM 元素
     const notaryForm = document.getElementById('notaryForm');
-    const queryBtn = document.getElementById('queryBtn');
     const loadingModal = document.getElementById('loadingModal');
     const resultModal = document.getElementById('resultModal');
     const errorModal = document.getElementById('errorModal');
@@ -667,21 +702,31 @@
     const refreshVerifyCode = document.getElementById('refreshVerifyCode');
     const queryCodeInput = document.getElementById('queryCode');
 
-    // PDF 相关元素
-    const pdfContainer = document.getElementById('pdfContainer');
+    // PDF.js 相关元素
+    const pdfPagesContainer = document.getElementById('pdfPages');
     const pdfLoading = document.getElementById('pdfLoading');
-    const pdfViewer = document.getElementById('pdfViewer');
-    const pdfFallback = document.getElementById('pdfFallback');
-    const pdfProgress = document.getElementById('pdfProgress');
+    const prevPageBtn = document.getElementById('prevPageBtn');
+    const nextPageBtn = document.getElementById('nextPageBtn');
+    const currentPageInput = document.getElementById('currentPageInput');
+    const totalPagesSpan = document.getElementById('totalPages');
+    const zoomOutBtn = document.getElementById('zoomOutBtn');
+    const zoomInBtn = document.getElementById('zoomInBtn');
+    const zoomSelect = document.getElementById('zoomSelect');
     const downloadBtn = document.getElementById('downloadBtn');
-    const directDownloadBtn = document.getElementById('directDownloadBtn');
     const openNewTabBtn = document.getElementById('openNewTabBtn');
-    const retryLoadBtn = document.getElementById('retryLoadBtn');
 
     // 全局变量
     let requestTimeout = null;
     let currentPdfUrl = '';
     const REQUEST_TIMEOUT_MS = 180000; // 3 分钟
+
+    // PDF.js 状态
+    let pdfDoc = null;
+    let currentPage = 1;
+    let totalPages = 0;
+    let currentScale = 1.0;
+    let rendering = false;
+    let renderQueue = [];
 
     // API 配置
     const API_BASE_URL = 'https://lsnprapi.chkjnotary.com/api/Share/Share';
@@ -743,224 +788,37 @@
       clearRequestTimeout();
     }
 
-    // 更新 PDF 加载进度
-    function updatePdfProgress(percent) {
-      pdfProgress.style.width = percent + '%';
-    }
-
-    // 通过 Blob 下载 PDF
-    async function downloadPDFFromUrl(
-      pdfUrl,
-      fileName = '债务履行核查函.pdf'
-    ) {
-      try {
-        const downloadModal = document.createElement('div');
-        downloadModal.innerHTML = `
-          <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                      background: rgba(0,0,0,0.5); display: flex; justify-content: center;
-                      align-items: center; z-index: 9999;">
-            <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; min-width: 200px;">
-              <div class="loading-spinner" style="margin: 0 auto;"></div>
-              <h3 style="margin: 10px 0 5px 0; color: #333;">正在下载 PDF 文件...</h3>
-              <p style="color: #666; font-size: 12px;">请稍候，文件正在下载中</p>
-            </div>
-          </div>
-        `;
-        document.body.appendChild(downloadModal);
-
-        const response = await fetch(pdfUrl, {
-          method: 'GET',
-          mode: 'cors',
-          credentials: 'same-origin',
-        });
-        if (!response.ok) {
-          throw new Error(`下载失败: ${response.status} ${response.statusText}`);
-        }
-        const blob = await response.blob();
-        const blobUrl = window.URL.createObjectURL(blob);
-
-        const link = document.createElement('a');
-        link.href = blobUrl;
-        link.download = fileName;
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(blobUrl);
-        document.body.removeChild(downloadModal);
-      } catch (error) {
-        console.error('下载失败:', error);
-        alert('文件下载失败: ' + error.message);
-        const modal = document.querySelector(
-          '[style*="position: fixed; top: 0; left: 0; width: 100%; height: 100%"]'
-        );
-        if (modal) {
-          document.body.removeChild(modal);
-        }
-      }
-    }
-
-    // 判断是否为移动设备
-    function isMobileDevice() {
-      return (
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent
-        ) || window.innerWidth <= 768
-      );
-    }
-
-    // 加载 PDF 文档
-    function loadPdfDocument(pdfUrl) {
-      currentPdfUrl = pdfUrl;
-
-      pdfLoading.style.display = 'flex';
-      pdfViewer.style.display = 'none';
-      pdfFallback.style.display = 'none';
-      pdfViewer.src = '';
-      updatePdfProgress(0);
-
-      const isMobile = isMobileDevice();
-
-      let progress = 0;
-      const progressInterval = setInterval(() => {
-        progress += Math.random() * 15;
-        if (progress >= 90) {
-          progress = 90;
-          clearInterval(progressInterval);
-        }
-        updatePdfProgress(progress);
-      }, 200);
-
-      const pdfLoadTimeout = setTimeout(() => {
-        clearInterval(progressInterval);
-        showPdfFallback(
-          'PDF 文档加载超时，请检查网络连接或尝试直接下载'
-        );
-      }, 15000);
-
-      pdfViewer.onload = function () {
-        clearInterval(progressInterval);
-        clearTimeout(pdfLoadTimeout);
-        updatePdfProgress(100);
-
-        setTimeout(() => {
-          pdfLoading.style.display = 'none';
-          pdfViewer.style.display = 'block';
-
-          if (isMobile) {
-            const existingTip = pdfContainer.querySelector('.mobile-pdf-tip');
-            if (!existingTip) {
-              const mobileTip = document.createElement('div');
-              mobileTip.className =
-                'mobile-pdf-tip bg-blue-50 border border-blue-200 rounded p-2 mb-2 text-center text-xs text-blue-700';
-              mobileTip.innerHTML = `
-                <i class="fas fa-hand-paper mr-1"></i>
-                提示：如需放大查看，请在 PDF 内部双指缩放；页面本身不会左右移动。
-              `;
-              pdfContainer.insertBefore(mobileTip, pdfContainer.firstChild);
-            }
-          }
-
-          pdfViewer.style.width = '100%';
-          pdfViewer.style.height = '100%';
-          pdfViewer.style.border = 'none';
-          pdfViewer.setAttribute('allowfullscreen', 'true');
-          pdfViewer.setAttribute('webkitallowfullscreen', 'true');
-          pdfViewer.setAttribute('mozallowfullscreen', 'true');
-
-          const originalUrl = pdfViewer.src;
-          if (!originalUrl.includes('#')) {
-            pdfViewer.src = originalUrl + '#view=fitH';
-          }
-
-          downloadBtn.onclick = () => {
-            downloadPDFFromUrl(
-              pdfUrl,
-              `债务履行核查函_${new Date().getTime()}.pdf`
-            );
-          };
-          directDownloadBtn.onclick = () => {
-            downloadPDFFromUrl(
-              pdfUrl,
-              `债务履行核查函_${new Date().getTime()}.pdf`
-            );
-          };
-          openNewTabBtn.onclick = () => {
-            window.open(pdfUrl, '_blank');
-          };
-        }, 300);
-      };
-
-      pdfViewer.onerror = function () {
-        clearInterval(progressInterval);
-        clearTimeout(pdfLoadTimeout);
-        showPdfFallback(
-          'PDF 文档加载失败，可能是浏览器不支持或文档不存在，请尝试下载 PDF 文件'
-        );
-      };
-
-      pdfViewer.src = pdfUrl;
-    }
-
-    // 显示 PDF 加载失败备用方案
-    function showPdfFallback(errorMessage) {
-      pdfLoading.style.display = 'none';
-      pdfFallback.style.display = 'flex';
-      if (errorMessage) {
-        const p = pdfFallback.querySelector('p');
-        if (p) p.textContent = errorMessage;
-      }
-
-      downloadBtn.onclick = () => {
-        if (currentPdfUrl) {
-          downloadPDFFromUrl(
-            currentPdfUrl,
-            `债务履行核查函_${new Date().getTime()}.pdf`
-          );
-        }
-      };
-      directDownloadBtn.onclick = () => {
-        if (currentPdfUrl) {
-          downloadPDFFromUrl(
-            currentPdfUrl,
-            `债务履行核查函_${new Date().getTime()}.pdf`
-          );
-        }
-      };
-      openNewTabBtn.onclick = () => {
-        if (currentPdfUrl) {
-          window.open(currentPdfUrl, '_blank');
-        }
-      };
-    }
-
-    // 显示结果弹窗并加载 PDF
-    function showResultWithPdf(partyName, pdfUrl) {
-      hideLoading();
+    // 显示结果弹窗
+    function showResultModal() {
       resultModal.classList.remove('hidden');
       resultModal.classList.add('fade-in');
       document.body.style.overflow = 'hidden';
-      loadPdfDocument(pdfUrl);
-      clearQueryCodeInput();
     }
 
     // 隐藏结果弹窗
     function hideResult() {
       resultModal.classList.add('hidden');
       resultModal.classList.remove('fade-in');
-      pdfViewer.src = '';
-      pdfLoading.style.display = 'flex';
-      pdfViewer.style.display = 'none';
-      pdfFallback.style.display = 'none';
-
-      const mobileTip = pdfContainer.querySelector('.mobile-pdf-tip');
-      if (mobileTip) {
-        mobileTip.remove();
-      }
-
       document.body.style.overflow = 'auto';
+      // 清理 PDF 内容
+      pdfPagesContainer.innerHTML = `
+        <div
+          id="pdfLoading"
+          class="flex flex-col items-center justify-center h-full text-gray-500 text-sm"
+        >
+          <div class="loading-spinner mb-3"></div>
+          <p>正在加载 PDF 文档，请稍候...</p>
+        </div>
+      `;
+      pdfDoc = null;
       currentPdfUrl = '';
+      currentPage = 1;
+      totalPages = 0;
+      currentScale = 1.0;
+      currentPageInput.value = 1;
+      totalPagesSpan.textContent = '1';
+      zoomSelect.value = '1';
+      updatePageButtons();
     }
 
     // 显示错误弹窗
@@ -1046,6 +904,209 @@
       }
     }
 
+    // 更新翻页按钮状态
+    function updatePageButtons() {
+      if (!pdfDoc) {
+        prevPageBtn.classList.add('pdfjs-disabled');
+        nextPageBtn.classList.add('pdfjs-disabled');
+        return;
+      }
+      prevPageBtn.classList.toggle('pdfjs-disabled', currentPage <= 1);
+      nextPageBtn.classList.toggle('pdfjs-disabled', currentPage >= totalPages);
+    }
+
+    // 渲染单页
+    async function renderPage(pageNum, scale) {
+      if (!pdfDoc) return;
+      rendering = true;
+
+      try {
+        const page = await pdfDoc.getPage(pageNum);
+        const viewport = page.getViewport({ scale });
+
+        let canvas = pdfPagesContainer.querySelector(
+          `canvas[data-page-number="${pageNum}"]`
+        );
+        let pageNumberLabel = pdfPagesContainer.querySelector(
+          `div[data-page-label="${pageNum}"]`
+        );
+
+        if (!canvas) {
+          // 创建页码标签
+          pageNumberLabel = document.createElement('div');
+          pageNumberLabel.className = 'pdfjs-page-number';
+          pageNumberLabel.dataset.pageLabel = pageNum;
+          pageNumberLabel.textContent = `第 ${pageNum} 页`;
+          pdfPagesContainer.appendChild(pageNumberLabel);
+
+          // 创建 canvas
+          canvas = document.createElement('canvas');
+          canvas.className = 'pdfjs-page-canvas';
+          canvas.dataset.pageNumber = pageNum;
+          pdfPagesContainer.appendChild(canvas);
+        }
+
+        const context = canvas.getContext('2d');
+        const devicePixelRatio = window.devicePixelRatio || 1;
+
+        canvas.width = viewport.width * devicePixelRatio;
+        canvas.height = viewport.height * devicePixelRatio;
+        canvas.style.width = viewport.width + 'px';
+        canvas.style.height = viewport.height + 'px';
+
+        const renderContext = {
+          canvasContext: context,
+          viewport: viewport.clone({ scale: scale * devicePixelRatio / scale }),
+        };
+
+        await page.render(renderContext).promise;
+      } catch (err) {
+        console.error('渲染页面失败:', err);
+      } finally {
+        rendering = false;
+        if (renderQueue.length > 0) {
+          const next = renderQueue.shift();
+          renderPage(next.pageNum, next.scale);
+        }
+      }
+    }
+
+    // 队列渲染
+    function queueRenderPage(pageNum, scale) {
+      if (rendering) {
+        renderQueue.push({ pageNum, scale });
+      } else {
+        renderPage(pageNum, scale);
+      }
+    }
+
+    // 渲染所有页面（当前缩放）
+    function renderAllPages() {
+      if (!pdfDoc) return;
+      pdfPagesContainer.innerHTML = '';
+      for (let num = 1; num <= pdfDoc.numPages; num++) {
+        queueRenderPage(num, currentScale);
+      }
+    }
+
+    // 加载 PDF 文档（使用 PDF.js）
+    async function loadPdfWithPdfJs(pdfUrl) {
+      if (!window['pdfjsLib']) {
+        showError('PDF 预览组件加载失败，请尝试下载文件查看');
+        return;
+      }
+
+      currentPdfUrl = pdfUrl;
+      pdfPagesContainer.innerHTML = `
+        <div
+          id="pdfLoading"
+          class="flex flex-col items-center justify-center h-full text-gray-500 text-sm"
+        >
+          <div class="loading-spinner mb-3"></div>
+          <p>正在加载 PDF 文档，请稍候...</p>
+        </div>
+      `;
+
+      try {
+        const loadingTask = pdfjsLib.getDocument({
+          url: pdfUrl,
+          withCredentials: false,
+        });
+        pdfDoc = await loadingTask.promise;
+
+        totalPages = pdfDoc.numPages;
+        currentPage = 1;
+        currentScale = 1.0;
+        currentPageInput.value = currentPage;
+        totalPagesSpan.textContent = totalPages.toString();
+        zoomSelect.value = '1';
+
+        pdfPagesContainer.innerHTML = '';
+        renderAllPages();
+        updatePageButtons();
+      } catch (err) {
+        console.error('PDF 加载失败:', err);
+        showError('PDF 文档加载失败，请尝试下载文件查看');
+      }
+    }
+
+    // 通过 Blob 下载 PDF
+    async function downloadPDFFromUrl(
+      pdfUrl,
+      fileName = '债务履行核查函.pdf'
+    ) {
+      try {
+        const downloadModal = document.createElement('div');
+        downloadModal.innerHTML = `
+          <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                      background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+                      align-items: center; z-index: 9999;">
+            <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; min-width: 200px;">
+              <div class="loading-spinner" style="margin: 0 auto;"></div>
+              <h3 style="margin: 10px 0 5px 0; color: #333;">正在下载 PDF 文件...</h3>
+              <p style="color: #666; font-size: 12px;">请稍候，文件正在下载中</p>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(downloadModal);
+
+        const response = await fetch(pdfUrl, {
+          method: 'GET',
+          mode: 'cors',
+          credentials: 'same-origin',
+        });
+        if (!response.ok) {
+          throw new Error(`下载失败: ${response.status} ${response.statusText}`);
+        }
+        const blob = await response.blob();
+        const blobUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = fileName;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
+        document.body.removeChild(downloadModal);
+      } catch (error) {
+        console.error('下载失败:', error);
+        alert('文件下载失败: ' + error.message);
+        const modal = document.querySelector(
+          '[style*="position: fixed; top: 0; left: 0; width: 100%; height: 100%"]'
+        );
+        if (modal) {
+          document.body.removeChild(modal);
+        }
+      }
+    }
+
+    // 显示结果弹窗并加载 PDF
+    function showResultWithPdf(partyName, pdfUrl) {
+      hideLoading();
+      showResultModal();
+      loadPdfWithPdfJs(pdfUrl);
+
+      // 绑定下载和新窗口按钮
+      downloadBtn.onclick = () => {
+        if (currentPdfUrl) {
+          downloadPDFFromUrl(
+            currentPdfUrl,
+            `债务履行核查函_${new Date().getTime()}.pdf`
+          );
+        }
+      };
+      openNewTabBtn.onclick = () => {
+        if (currentPdfUrl) {
+          window.open(currentPdfUrl, '_blank');
+        }
+      };
+
+      clearQueryCodeInput();
+    }
+
     // 表单提交
     notaryForm.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -1103,13 +1164,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // 重新加载 PDF
-    retryLoadBtn.addEventListener('click', () => {
-      if (currentPdfUrl) {
-        loadPdfDocument(currentPdfUrl);
-      }
-    });
-
     // 点击背景关闭弹窗
     [resultModal, errorModal].forEach((modal) => {
       modal.addEventListener('click', (e) => {
@@ -1138,26 +1192,22 @@
       }
     });
 
-    // 页面加载完成后初始化
-    document.addEventListener('DOMContentLoaded', () => {
-      refreshVerifyCode.click();
-
-      document
-        .getElementById('retryQueryBtn')
-        .addEventListener('click', () => {
-          hideError();
-        });
-      document
-        .getElementById('closeErrorBtn')
-        .addEventListener('click', () => {
-          hideError();
-        });
-      document
-        .getElementById('manualCloseErrorBtn')
-        .addEventListener('click', () => {
-          hideError();
-        });
-    });
+    // 错误弹窗按钮
+    document
+      .getElementById('retryQueryBtn')
+      .addEventListener('click', () => {
+        hideError();
+      });
+    document
+      .getElementById('closeErrorBtn')
+      .addEventListener('click', () => {
+        hideError();
+      });
+    document
+      .getElementById('manualCloseErrorBtn')
+      .addEventListener('click', () => {
+        hideError();
+      });
 
     // 输入框聚焦效果
     document.querySelectorAll('input').forEach((input) => {
@@ -1170,10 +1220,87 @@
       });
     });
 
+    // PDF 翻页与缩放事件
+    prevPageBtn.addEventListener('click', () => {
+      if (!pdfDoc || currentPage <= 1) return;
+      currentPage--;
+      currentPageInput.value = currentPage;
+      const targetCanvas = pdfPagesContainer.querySelector(
+        `canvas[data-page-number="${currentPage}"]`
+      );
+      if (targetCanvas) {
+        targetCanvas.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      updatePageButtons();
+    });
+
+    nextPageBtn.addEventListener('click', () => {
+      if (!pdfDoc || currentPage >= totalPages) return;
+      currentPage++;
+      currentPageInput.value = currentPage;
+      const targetCanvas = pdfPagesContainer.querySelector(
+        `canvas[data-page-number="${currentPage}"]`
+      );
+      if (targetCanvas) {
+        targetCanvas.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      updatePageButtons();
+    });
+
+    currentPageInput.addEventListener('change', () => {
+      if (!pdfDoc) return;
+      let val = parseInt(currentPageInput.value, 10);
+      if (isNaN(val) || val < 1) val = 1;
+      if (val > totalPages) val = totalPages;
+      currentPage = val;
+      currentPageInput.value = currentPage;
+      const targetCanvas = pdfPagesContainer.querySelector(
+        `canvas[data-page-number="${currentPage}"]`
+      );
+      if (targetCanvas) {
+        targetCanvas.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      updatePageButtons();
+    });
+
+    zoomOutBtn.addEventListener('click', () => {
+      if (!pdfDoc) return;
+      let newScale = currentScale - 0.1;
+      if (newScale < 0.5) newScale = 0.5;
+      currentScale = newScale;
+      zoomSelect.value = currentScale.toFixed(2);
+      renderAllPages();
+    });
+
+    zoomInBtn.addEventListener('click', () => {
+      if (!pdfDoc) return;
+      let newScale = currentScale + 0.1;
+      if (newScale > 3) newScale = 3;
+      currentScale = newScale;
+      zoomSelect.value = currentScale.toFixed(2);
+      renderAllPages();
+    });
+
+    zoomSelect.addEventListener('change', () => {
+      if (!pdfDoc) return;
+      const val = parseFloat(zoomSelect.value);
+      if (!isNaN(val)) {
+        currentScale = val;
+        renderAllPages();
+      }
+    });
+
     // 页面卸载时清理超时
     window.addEventListener('beforeunload', () => {
       clearRequestTimeout();
     });
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      refreshVerifyCode.click();
+      updatePageButtons();
+    });
   </script>
 </body>
 </html>
+```
