@@ -1,1 +1,805 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport"content="width=device-width, initial-scale=1.0"><title>公证处-债务履行核查函查询系统</title><!--Tailwind CSS CDN--><script src="https://cdn.tailwindcss.com"></script><!--Font Awesome--><link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><!--配置Tailwind--><script>tailwind.config={theme:{extend:{colors:{notary:'#1e3a8a',gold:'#d97706',seal:'#dc2626',official:'#374151',paper:'#f9f7f4',},fontFamily:{song:['"Noto Serif SC"','serif'],kai:['"Noto Serif SC"','serif'],official:['SimSun','NSimSun','serif'],},boxShadow:{'official':'0 4px 20px 0 rgba(0, 0, 0, 0.15)','seal':'0 0 0 3px #ffffff, 0 0 0 6px #dc2626, 0 0 15px rgba(220, 38, 38, 0.3)',}}}}</script><style type="text/tailwindcss">@layer utilities{.notary-gradient{background:linear-gradient(135deg,#1e3a8a 0%,#1e40af 50%,#3730a3 100%)}.gold-gradient{background:linear-gradient(135deg,#d97706 0%,#f59e0b 50%,#fbbf24 100%)}.paper-bg{background:linear-gradient(to bottom,#fefefe 0%,#f9f7f4 50%,#f5f3f0 100%)}.red-seal{background:radial-gradient(circle,#dc2626 30%,#991b1b 70%);position:relative}.document-border{border:2px solid#1e3a8a;position:relative}.document-border::before{content:'';position:absolute;top:-4px;left:-4px;right:-4px;bottom:-4px;border:1px solid#d97706;pointer-events:none}.official-stamp{filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))}.chinese-title{background:linear-gradient(45deg,#1e3a8a,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}.captcha-display{background:linear-gradient(135deg,#e5e7eb 0%,#d1d5db 50%,#9ca3af 100%);font-family:'Courier New',monospace;font-weight:bold;letter-spacing:0.3em;color:#1f2937;text-shadow:1px 1px 2px rgba(255,255,255,0.8);position:relative;user-select:none;border:2px solid#9ca3af;border-radius:4px}.captcha-container{position:relative;background:#f3f4f6;border:2px solid#d1d5db;border-radius:6px;overflow:hidden}.refresh-btn{background:#6b7280;color:white;border:none;border-radius:4px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;flex-shrink:0}.refresh-btn:hover{background:#4b5563;transform:rotate(180deg)}.modal-backdrop{backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}.modal-content{max-height:95vh;display:flex;flex-direction:column}.loading-spinner{border:3px solid#f3f4f6;border-top:3px solid#1e3a8a;border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite}@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}.slide-in-up{animation:slideInUp 0.3s ease-out}@keyframes slideInUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}.fade-in{animation:fadeIn 0.2s ease-out}@keyframes fadeIn{from{opacity:0}to{opacity:1}}.pdf-viewer{width:100%;height:60vh;border:1px solid#d1d5db;border-radius:8px;background:#f9fafb}.pdf-fallback{width:100%;height:60vh;border:2px dashed#d1d5db;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#f9fafb}.pdf-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px}.footer-card{background:rgba(255,255,255,0.1);border-radius:8px;padding:1.5rem;transition:all 0.3s ease;height:100%;border:1px solid rgba(255,255,255,0.1)}.footer-card:hover{background:rgba(255,255,255,0.15);transform:translateY(-2px)}}</style></head><body class="font-official min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 text-gray-800"><!--公证处抬头横幅--><header class="notary-gradient text-white shadow-official"><div class="container mx-auto px-4 py-4"><div class="flex flex-col sm:flex-row items-center justify-between"><div class="flex items-center mb-3 sm:mb-0"><div class="w-12 h-12 sm:w-14 sm:h-14 red-seal rounded-full flex items-center justify-center mr-3 sm:mr-4 shadow-seal flex-shrink-0"><i class="fas fa-balance-scale text-white text-lg sm:text-xl"></i></div><div class="text-center sm:text-left"><h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-wide">公证处</h1><p class="text-blue-200 text-xs sm:text-sm md:text-base">债务履行核查函查询系统</p></div></div><div class="text-center sm:text-right"><div class="text-blue-200 text-xs sm:text-sm"></div></div></div></div></header><!--国徽装饰条--><div class="bg-gradient-to-r from-red-600 via-red-700 to-red-600 py-2"><div class="container mx-auto px-4 flex items-center justify-center"><i class="fas fa-star text-yellow-300 mr-2 sm:mr-3 text-sm sm:text-base"></i><span class="text-white font-semibold text-xs sm:text-sm">中华人民共和国公证法授权机构</span><i class="fas fa-star text-yellow-300 ml-2 sm:ml-3 text-sm sm:text-base"></i></div></div><!--主要内容区域--><main class="container mx-auto px-4 py-6 sm:py-8"><!--系统说明--><div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 mb-6 sm:mb-8 border-l-4 border-notary"><div class="flex items-start"><i class="fas fa-info-circle text-notary text-lg sm:text-xl mt-1 mr-3 flex-shrink-0"></i><div class="min-w-0 flex-1"><h2 class="text-lg sm:text-xl font-semibold text-notary mb-2">查询须知</h2><p class="text-gray-600 leading-relaxed text-sm sm:text-base">本系统系公证处债务履行核查函查询系统。为确保查询结果的准确性和法律效力，敬请当事人准确输入相关信息进行身份验证。查询结果与当事人利益密切相关，如有异议，请及时与相关公证机构联系。</p></div></div></div><!--移动端：垂直布局|桌面端：左右分栏--><div class="mobile-stack"><!--左侧/上部：身份验证区--><div class="lg:col-span-2 bg-white rounded-lg shadow-official p-4 sm:p-6 mb-6 lg:mb-0 mobile-full-width"><div class="text-center mb-6"><h3 class="text-lg sm:text-xl font-semibold text-notary mb-2">身份验证</h3><div class="w-12 sm:w-16 h-1 bg-gold mx-auto"></div></div><form id="notaryForm"class="space-y-4 sm:space-y-6"><!--公证书编号--><div class="space-y-2"><label class="block text-sm font-medium text-gray-700"><i class="fas fa-hashtag text-notary mr-2"></i>公证书编号</label><input type="text"id="certificateNo"placeholder="如：（2025）xxx网证字第xxx号"class="w-full px-3 sm:px-4 py-3 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-notary focus:border-notary transition-all duration-300 text-base"required><p class="text-xs text-gray-500">请输入完整编号，含年度和序号</p></div><!--当事人姓名--><div class="space-y-2"><label class="block text-sm font-medium text-gray-700"><i class="fas fa-user text-notary mr-2"></i>当事人姓名</label><input type="text"id="partyName"placeholder="请输入当事人真实姓名"class="w-full px-3 sm:px-4 py-3 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-notary focus:border-notary transition-all duration-300 text-base"required></div><!--身份证号码--><div class="space-y-2"><label class="block text-sm font-medium text-gray-700"><i class="fas fa-id-card text-notary mr-2"></i>身份证号码</label><input type="text"id="idNumber"placeholder="请输入18位公民身份号码"maxlength="18"class="w-full px-3 sm:px-4 py-3 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-notary focus:border-notary transition-all duration-300 text-base"required><p class="text-xs text-gray-500">须与公证书记载信息完全一致</p></div><!--查询码-清晰版本--><div class="space-y-2"><label class="block text-sm font-medium text-gray-700"><i class="fas fa-key text-notary mr-2"></i>查询验证码</label><div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3"><input type="text"id="queryCode"placeholder="请输入5位验证码"maxlength="5"class="flex-1 px-3 sm:px-4 py-3 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-notary focus:border-notary transition-all duration-300 uppercase text-base touch-friendly"required><div class="captcha-container flex items-center justify-center px-3 py-2 sm:py-3 bg-gray-100 flex-shrink-0"><span class="captcha-display text-lg sm:text-xl font-bold tracking-widest px-3 py-2"id="verifyCodeDisplay">A8K3M</span><button type="button"id="refreshVerifyCode"class="refresh-btn touch-friendly ml-2"><i class="fas fa-sync-alt text-sm"></i></button></div></div><p class="text-xs text-gray-500">验证码不区分大小写，请仔细辨认后输入</p></div><!--查询按钮--><button type="submit"id="queryBtn"class="w-full notary-gradient hover:opacity-90 text-white font-semibold py-3 sm:py-4 px-6 rounded-md transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center touch-friendly text-base sm:text-lg"><span id="queryBtnText">查询核查函</span><i class="fas fa-search ml-2"></i></button></form><!--公证处印章装饰--><div class="text-center mt-6"><div class="inline-block p-3 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50"><div class="red-seal w-12 h-12 rounded-full flex items-center justify-center mx-auto"><i class="fas fa-certificate text-white"></i></div><p class="text-xs text-gray-600 mt-2">公证处</p></div></div></div><!--右侧/下部：说明区域--><div class="lg:col-span-3"><div class="bg-white rounded-lg shadow-official p-4 sm:p-6 h-full flex flex-col"><div class="text-center flex-1 flex flex-col justify-center min-h-[300px] sm:min-h-[400px]"><div class="w-16 sm:w-20 h-16 sm:h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 border-2 border-dashed border-gray-300 flex-shrink-0"><i class="fas fa-file-pdf text-red-500 text-2xl sm:text-3xl"></i></div><h3 class="text-lg sm:text-xl font-semibold text-gray-700 mb-3">债务履行核查函</h3><p class="text-gray-500 leading-relaxed text-sm sm:text-base max-w-md mx-auto px-2">请在左侧完成身份验证后，点击查询按钮获取您的债务履行核查函PDF文件。查询结果将以弹窗形式展示PDF文档，支持在线预览和下载。</p></div></div></div></div></main><!--公证处声明-样式调整--><footer class="bg-notary text-white mt-8 sm:mt-12"><div class="container mx-auto px-4 py-6 sm:py-8"><div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8"><div class="footer-card"><h4 class="font-semibold mb-3 flex items-center text-sm sm:text-base"><i class="fas fa-shield-alt mr-2 flex-shrink-0"></i>声明</h4><p class="text-blue-200 text-xs sm:text-sm leading-relaxed">核查函具有完全的法律效力，可作为人民法院、仲裁机构及相关当事方认定事实的有效证据使用。</p></div><div class="footer-card"><h4 class="font-semibold mb-3 flex items-center text-sm sm:text-base"><i class="fas fa-lock mr-2 flex-shrink-0"></i>信息安全</h4><p class="text-blue-200 text-xs sm:text-sm leading-relaxed">系统严格保护查询人隐私信息，相关数据仅用于核查函查询，绝不向任何第三方泄露或用于其他用途。</p></div></div><div class="text-center text-blue-300 text-xs sm:text-sm mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-blue-400"></div></div></footer><!--加载弹窗-简化版--><div id="loadingModal"class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop flex items-center justify-center z-50 hidden fade-in"><div class="bg-white rounded-lg p-8 text-center max-w-sm mx-4"><div class="loading-spinner mx-auto mb-4"></div><h3 class="text-lg font-semibold text-gray-700">正在查询中...</h3><p class="text-gray-500 text-sm mt-2">请稍候，正在为您检索相关记录</p></div></div><!--结果弹窗-PDF版本--><div id="resultModal"class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop flex items-center justify-center z-50 hidden fade-in p-2 sm:p-4"><div class="bg-white rounded-lg shadow-2xl w-full max-w-7xl max-h-[98vh] modal-content slide-in-up"><!--弹窗头部--><div class="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg flex-shrink-0"><div><h3 class="text-lg sm:text-xl font-semibold text-notary flex items-center"><i class="fas fa-file-pdf text-red-500 mr-2"></i>债务履行核查函</h3><p class="text-sm text-gray-500 mt-1">查询成功·PDF文档</p></div><button id="closeModal"class="text-gray-400 hover:text-gray-600 transition-colors touch-friendly p-2"><i class="fas fa-times text-xl"></i></button></div><!--弹窗内容-PDF查看器--><div class="p-4 flex-1 overflow-hidden"><!--PDF查看器容器--><div id="pdfContainer"class="pdf-viewer"><!--PDF加载状态--><div id="pdfLoading"class="pdf-loading"><div class="loading-spinner mb-4"></div><h4 class="text-lg font-semibold text-gray-700 mb-2">正在加载PDF文档...</h4><p class="text-gray-500 text-sm">请稍候，文档加载可能需要一些时间</p><div class="mt-4 w-full bg-gray-200 rounded-full h-2"><div id="pdfProgress"class="bg-notary h-2 rounded-full"style="width: 0%"></div></div></div><!--PDF iframe容器（成功加载时显示）--><iframe id="pdfViewer"src=""width="100%"height="100%"style="display: none; border: none;"title="债务履行核查函PDF文档"></iframe><!--PDF加载失败时的备用方案--><div id="pdfFallback"class="pdf-fallback"style="display: none;"><i class="fas fa-exclamation-triangle text-4xl text-yellow-500 mb-4"></i><h4 class="text-lg font-semibold text-gray-700 mb-2">PDF文档加载失败</h4><p class="text-gray-500 text-sm mb-4 text-center px-4">PDF文档暂时无法在浏览器中显示，您可以尝试以下方式：</p><div class="flex flex-col sm:flex-row gap-3"><a id="directDownloadBtn"href="#"class="bg-notary hover:bg-notary/90 text-white font-semibold py-2 px-4 rounded-md transition-colors flex items-center justify-center"><i class="fas fa-download mr-2"></i>直接下载PDF</a><button id="retryLoadBtn"class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md transition-colors flex items-center justify-center"><i class="fas fa-redo mr-2"></i>重新加载</button></div></div></div><!--操作按钮组--><div class="flex flex-col sm:flex-row gap-3 justify-center mt-4 flex-shrink-0"><button id="downloadBtn"class="bg-notary hover:bg-notary/90 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-md transition-all duration-300 flex items-center justify-center shadow-lg touch-friendly text-sm sm:text-base"><i class="fas fa-download mr-2"></i>下载PDF文件</button><button id="openNewTabBtn"class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-md transition-all duration-300 flex items-center justify-center shadow-lg touch-friendly text-sm sm:text-base"><i class="fas fa-external-link-alt mr-2"></i>新窗口打开</button><button id="newQueryBtn"class="bg-gold hover:bg-gold/90 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-md transition-all duration-300 flex items-center justify-center shadow-lg touch-friendly text-sm sm:text-base"><i class="fas fa-plus mr-2"></i>新的查询</button></div></div></div></div><!--错误弹窗--><div id="errorModal"class="fixed inset-0 bg-black bg-opacity-50 modal-backdrop flex items-center justify-center z-50 hidden fade-in p-4"><div class="bg-white rounded-lg shadow-xl w-full max-w-md modal-content slide-in-up relative"><!--关闭按钮（右上角X）--><button id="manualCloseErrorBtn"class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors touch-friendly p-2 z-10"onclick="hideError()"><i class="fas fa-times text-lg"></i></button><div class="p-6 text-center"><div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i></div><h3 class="text-lg font-semibold text-red-600 mb-3">查询失败</h3><p id="errorMsg"class="text-gray-600 mb-6 text-sm px-2">您提供的身份信息有误或该公证书不存在，请核实后重新查询。</p><button id="retryQueryBtn"class="bg-notary hover:bg-notary/90 text-white font-semibold py-2 px-6 rounded-md transition-colors touch-friendly mr-3">重新查询</button><button id="closeErrorBtn"class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-md transition-colors touch-friendly">关闭</button></div></div></div><script>const notaryForm=document.getElementById('notaryForm');const queryBtn=document.getElementById('queryBtn');const loadingModal=document.getElementById('loadingModal');const resultModal=document.getElementById('resultModal');const errorModal=document.getElementById('errorModal');const closeModal=document.getElementById('closeModal');const verifyCodeDisplay=document.getElementById('verifyCodeDisplay');const refreshVerifyCode=document.getElementById('refreshVerifyCode');const queryCodeInput=document.getElementById('queryCode');const pdfContainer=document.getElementById('pdfContainer');const pdfLoading=document.getElementById('pdfLoading');const pdfViewer=document.getElementById('pdfViewer');const pdfFallback=document.getElementById('pdfFallback');const pdfProgress=document.getElementById('pdfProgress');const downloadBtn=document.getElementById('downloadBtn');const directDownloadBtn=document.getElementById('directDownloadBtn');const openNewTabBtn=document.getElementById('openNewTabBtn');const retryLoadBtn=document.getElementById('retryLoadBtn');let requestTimeout=null;let currentPdfUrl='';const REQUEST_TIMEOUT_MS=180000;const API_BASE_URL=decodeURIComponent(escape(atob("aHR0cHM6Ly9sc25wcmFwaS5jaGtqbm90YXJ5LmNvbS9hcGkvU2hhcmUvU2hhcmU=")));function generateVerifyCode(){const chars='ABCDEFGHJKLMNPQRSTUVWXYZ3456789';let result='';for(let i=0;i<5;i++){result+=chars.charAt(Math.floor(Math.random()*chars.length))}return result}refreshVerifyCode.addEventListener('click',()=>{verifyCodeDisplay.textContent=generateVerifyCode();refreshVerifyCode.style.transform='rotate(180deg)';setTimeout(()=>{refreshVerifyCode.style.transform='rotate(0deg)'},200)});function clearQueryCodeInput(){queryCodeInput.value=''}function setupRequestTimeout(){if(requestTimeout){clearTimeout(requestTimeout)}requestTimeout=setTimeout(()=>{hideLoading();showError('查询失败，请联系客服')},REQUEST_TIMEOUT_MS)}function clearRequestTimeout(){if(requestTimeout){clearTimeout(requestTimeout);requestTimeout=null}}function showLoading(){loadingModal.classList.remove('hidden');loadingModal.classList.add('fade-in');setupRequestTimeout()}function hideLoading(){loadingModal.classList.add('hidden');loadingModal.classList.remove('fade-in');clearRequestTimeout()}function updatePdfProgress(percent){pdfProgress.style.width=percent+'%'}async function downloadPDFFromUrl(pdfUrl,fileName='债务履行核查函.pdf'){try{const downloadModal=document.createElement('div');downloadModal.innerHTML=`<div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 9999;"><div style="background: white; padding: 20px; border-radius: 8px; text-align: center; min-width: 200px;"><div class="loading-spinner"style="margin: 0 auto;"></div><h3 style="margin: 10px 0 5px 0; color: #333;">正在下载PDF文件...</h3><p style="color: #666; font-size: 12px;">请稍候，文件正在下载中</p></div></div>`;document.body.appendChild(downloadModal);const response=await fetch(pdfUrl,{method:'GET',mode:'cors',credentials:'same-origin'});if(!response.ok){throw new Error(`下载失败:${response.status}${response.statusText}`)}const blob=await response.blob();const blobUrl=window.URL.createObjectURL(blob);const link=document.createElement('a');link.href=blobUrl;link.download=fileName;link.style.display='none';document.body.appendChild(link);link.click();document.body.removeChild(link);window.URL.revokeObjectURL(blobUrl);document.body.removeChild(downloadModal)}catch(error){console.error('下载失败:',error);alert('文件下载失败: '+error.message);const modal=document.querySelector('[style*="position: fixed; top: 0; left: 0; width: 100%; height: 100%"]');if(modal){document.body.removeChild(modal)}}}function loadPdfDocument(pdfUrl){currentPdfUrl=pdfUrl;pdfLoading.style.display='flex';pdfViewer.style.display='none';pdfFallback.style.display='none';pdfViewer.src='';updatePdfProgress(0);let progress=0;const progressInterval=setInterval(()=>{progress+=Math.random()*15;if(progress>=90){progress=90;clearInterval(progressInterval)}updatePdfProgress(progress)},200);const pdfLoadTimeout=setTimeout(()=>{clearInterval(progressInterval);showPdfFallback('PDF文档加载超时，请检查网络连接或尝试直接下载')},15000);pdfViewer.onload=function(){clearInterval(progressInterval);clearTimeout(pdfLoadTimeout);updatePdfProgress(100);setTimeout(()=>{pdfLoading.style.display='none';pdfViewer.style.display='block';downloadBtn.onclick=()=>{downloadPDFFromUrl(pdfUrl,`债务履行核查函_${new Date().getTime()}.pdf`)};directDownloadBtn.onclick=()=>{downloadPDFFromUrl(pdfUrl,`债务履行核查函_${new Date().getTime()}.pdf`)};openNewTabBtn.onclick=()=>{window.open(pdfUrl,'_blank')}},500)};pdfViewer.onerror=function(){clearInterval(progressInterval);clearTimeout(pdfLoadTimeout);showPdfFallback('PDF文档加载失败，可能是浏览器不支持或文档不存在')};pdfViewer.src=pdfUrl}function showPdfFallback(errorMessage){pdfLoading.style.display='none';pdfFallback.style.display='flex';if(errorMessage){pdfFallback.querySelector('p').textContent=errorMessage}downloadBtn.onclick=()=>{if(currentPdfUrl){downloadPDFFromUrl(currentPdfUrl,`债务履行核查函_${new Date().getTime()}.pdf`)}};directDownloadBtn.onclick=()=>{if(currentPdfUrl){downloadPDFFromUrl(currentPdfUrl,`债务履行核查函_${new Date().getTime()}.pdf`)}};openNewTabBtn.onclick=()=>{if(currentPdfUrl){window.open(currentPdfUrl,'_blank')}}}function showResultWithPdf(partyName,pdfUrl){hideLoading();resultModal.classList.remove('hidden');resultModal.classList.add('fade-in');document.body.style.overflow='hidden';loadPdfDocument(pdfUrl);clearQueryCodeInput()}function hideResult(){resultModal.classList.add('hidden');resultModal.classList.remove('fade-in');pdfViewer.src='';pdfLoading.style.display='flex';pdfViewer.style.display='none';pdfFallback.style.display='none';document.body.style.overflow='auto';currentPdfUrl=''}function showError(message){clearRequestTimeout();hideLoading();errorModal.classList.remove('hidden');errorModal.classList.add('fade-in');document.getElementById('errorMsg').textContent=message;document.body.style.overflow='hidden';refreshVerifyCode.click();clearQueryCodeInput()}function hideError(){errorModal.classList.add('hidden');errorModal.classList.remove('fade-in');document.body.style.overflow='auto'}function fetchWithTimeout(url,options,timeout=180000){return new Promise((resolve,reject)=>{const timeoutId=setTimeout(()=>{reject(new Error('timeout'))},timeout);fetch(url,options).then(response=>{clearTimeout(timeoutId);resolve(response)}).catch(error=>{clearTimeout(timeoutId);reject(new Error('network'))})})}async function fetchVerificationLetter(idNumber,applicantName,notarizationNo){try{const idNumberStr=String(idNumber||'');const applicantNameStr=String(applicantName||'');const notarizationNoStr=String(notarizationNo||'');const url=new URL(`${API_BASE_URL}/VerificationLetter`);url.searchParams.append('IdNumber',idNumberStr);url.searchParams.append('ApplicantName',applicantNameStr);url.searchParams.append('NotarizationNo',notarizationNoStr);console.log('API请求URL:',url.toString());const response=await fetchWithTimeout(url,{method:'GET',headers:{'accept':'text/plain','Content-Type':'application/json'},mode:'cors'},180000);if(!response.ok){if(response.status===504){throw new Error('gateway_timeout');}throw new Error(`http_${response.status}`);}const result=await response.json();console.log('API完整响应:',result);if(result.code===200){return result.data;}else{throw new Error(result.message||'查询失败');}}catch(error){console.error('API请求错误:',error);if(error.message==='timeout'){throw new Error('响应超时，请联系客服');}else if(error.message==='network'){throw new Error('网络连接失败，请检查网络后重试');}else if(error.message==='gateway_timeout'){throw new Error('响应超时，请联系客服');}else if(error.message.startsWith('http_')){throw new Error(`服务器错误(${error.message.replace('http_','')})，请稍后重试`);}throw error;}}notaryForm.addEventListener('submit',async(e)=>{e.preventDefault();const certificateNo=document.getElementById('certificateNo').value.trim();const partyName=document.getElementById('partyName').value.trim();const idNumber=document.getElementById('idNumber').value.trim();const queryCode=document.getElementById('queryCode').value.trim().toUpperCase();if(!certificateNo||!partyName||!idNumber||!queryCode){showError('请填写所有必填字段');return;}const actualCode=verifyCodeDisplay.textContent.toUpperCase();if(queryCode!==actualCode){showError('验证码错误，请重新输入');return;}if(!/^\d{17}[\dXx]$/.test(idNumber)){showError('身份证格式不正确');return;}showLoading();try{const pdfUrl=await fetchVerificationLetter(idNumber,partyName,certificateNo);console.log('获取到的PDF URL:',pdfUrl);showResultWithPdf(partyName,pdfUrl);}catch(error){console.error('API请求错误:',error);showError(error.message);}});closeModal.addEventListener('click',hideResult);document.getElementById('newQueryBtn').addEventListener('click',()=>{hideResult();notaryForm.reset();refreshVerifyCode.click();clearQueryCodeInput();window.scrollTo({top:0,behavior:'smooth'});});retryLoadBtn.addEventListener('click',()=>{if(currentPdfUrl){loadPdfDocument(currentPdfUrl);}});[resultModal,errorModal].forEach(modal=>{modal.addEventListener('click',(e)=>{if(e.target===modal){if(modal.id==='resultModal'){hideResult();}else if(modal.id==='errorModal'){hideError();}}});});document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){if(!resultModal.classList.contains('hidden')){hideResult();}if(!errorModal.classList.contains('hidden')){hideError();}if(!loadingModal.classList.contains('hidden')){hideLoading();}}});document.addEventListener('DOMContentLoaded',()=>{refreshVerifyCode.click();document.getElementById('retryQueryBtn').addEventListener('click',()=>{hideError();});document.getElementById('closeErrorBtn').addEventListener('click',()=>{hideError();});document.getElementById('manualCloseErrorBtn').addEventListener('click',()=>{hideError();});});document.querySelectorAll('input').forEach(input=>{input.addEventListener('focus',function(){this.parentElement.classList.add('scale-[1.02]');this.parentElement.style.transition='transform 0.2s ease';});input.addEventListener('blur',function(){this.parentElement.classList.remove('scale-[1.02]');});});document.addEventListener('touchstart',function(e){if(e.touches.length>1){e.preventDefault();}});let lastTouchEnd=0;document.addEventListener('touchend',function(e){const now=(new Date()).getTime();if(now-lastTouchEnd<=300){e.preventDefault();}lastTouchEnd=now;},false);window.addEventListener('beforeunload',()=>{clearRequestTimeout()});</script></body></html>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>公证处 - 债务履行核查函查询系统</title>
+    <style>
+      :root {
+        --color-primary: #b71c1c; /* 主红：按钮、头部 */
+        --color-accent: #8b0000; /* 深红：强调、Hover */
+        --color-light-red: #ef9a9a; /* 浅红：边框、装饰 */
+        --color-bg: #f5f5f5; /* 浅灰：背景 */
+        --color-text: #333333;
+        --color-text-light: #666666;
+        --color-white: #ffffff;
+        --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --radius: 6px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family:
+          "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        line-height: 1.6;
+      }
+
+      /* Header样式 */
+      header {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+        color: var(--color-white);
+        padding: 30px 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .header-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 25px;
+      }
+
+      .logo-section {
+        flex-shrink: 0;
+      }
+
+      .header-logo {
+        width: 70px;
+        height: 70px;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+        animation: logoFloat 3s ease-in-out infinite;
+      }
+
+      @keyframes logoFloat {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+
+      .title-section {
+        text-align: center;
+        flex: 1;
+      }
+
+      .title-section h1 {
+        font-size: 32px;
+        font-weight: 600;
+        letter-spacing: 3px;
+        margin-bottom: 8px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .title-section h2 {
+        font-size: 18px;
+        font-weight: 400;
+        opacity: 0.95;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+      }
+
+      .auth-badge {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        letter-spacing: 1px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+      }
+
+      /* 移动端适配 */
+      @media (max-width: 768px) {
+        header {
+          padding: 20px 15px;
+        }
+
+        .header-container {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .header-logo {
+          width: 60px;
+          height: 60px;
+        }
+
+        .title-section h1 {
+          font-size: 26px;
+          letter-spacing: 2px;
+        }
+
+        .title-section h2 {
+          font-size: 15px;
+        }
+
+        .auth-badge {
+          font-size: 11px;
+          padding: 5px 12px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header-logo {
+          width: 50px;
+          height: 50px;
+        }
+
+        .title-section h1 {
+          font-size: 24px;
+        }
+
+        .title-section h2 {
+          font-size: 14px;
+        }
+      }
+
+      /* 主容器 */
+      .container {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 0 20px;
+      }
+
+      /* 卡片通用样式 */
+      .card {
+        background-color: var(--color-white);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-card);
+        margin-bottom: 20px;
+        overflow: hidden;
+        border: 1px solid #eee;
+      }
+
+      .card-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+      }
+
+      .card-header::before {
+        content: "";
+        display: block;
+        width: 4px;
+        height: 16px;
+        background-color: var(--color-accent);
+        margin-right: 10px;
+        border-radius: 2px;
+      }
+
+      .card-header h3 {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--color-text);
+      }
+
+      .card-body {
+        padding: 20px;
+      }
+
+      /* 查询须知 */
+      .notice-content {
+        font-size: 14px;
+        color: var(--color-text-light);
+        background-color: #fff9f9;
+        padding: 15px;
+        border-left: 3px solid var(--color-light-red);
+        border-radius: 0 4px 4px 0;
+      }
+
+      /* 表单样式 */
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        transition:
+          border-color 0.3s,
+          box-shadow 0.3s;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--color-accent);
+        box-shadow: 0 0 0 2px rgba(139, 0, 0, 0.1);
+      }
+
+      .form-hint {
+        font-size: 12px;
+        color: #999;
+        margin-top: 5px;
+      }
+
+      /* 验证码区域 */
+      .captcha-group {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+      }
+
+      .captcha-group .form-control {
+        flex: 1;
+      }
+
+      .captcha-box {
+        background-color: #f0f0f0;
+        padding: 0 15px;
+        height: 40px;
+        line-height: 40px;
+        font-family: "Courier New", Courier, monospace;
+        font-weight: bold;
+        font-size: 18px;
+        color: var(--color-accent);
+        letter-spacing: 3px;
+        border: 1px dashed #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+        user-select: none;
+        text-align: center;
+        min-width: 100px;
+      }
+
+      /* 按钮 */
+      .btn-submit {
+        width: 100%;
+        padding: 12px;
+        background-color: var(--color-primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-weight: 500;
+      }
+
+      .btn-submit:hover {
+        background-color: var(--color-accent);
+      }
+
+      .btn-submit:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      /* 底部双栏 */
+      .bottom-section {
+        display: flex;
+        gap: 20px;
+        margin-top: 30px;
+      }
+
+      .bottom-section .card {
+        flex: 1;
+        margin-bottom: 0;
+      }
+
+      .info-text {
+        font-size: 13px;
+        color: var(--color-text-light);
+      }
+
+      /* 模态框 (Modal) */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .modal-content {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        position: relative;
+      }
+
+      .modal-content.pdf-modal {
+        max-width: 900px;
+        height: 85vh;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+      }
+
+      .modal-header {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: var(--color-primary);
+      }
+
+      .modal-body {
+        margin-bottom: 20px;
+        font-size: 14px;
+      }
+
+      .modal-footer {
+        margin-top: 20px;
+      }
+
+      .btn-modal {
+        padding: 8px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        background: white;
+        margin: 0 5px;
+      }
+
+      .btn-modal.primary {
+        background-color: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+      }
+
+      .btn-modal.primary:hover {
+        background-color: var(--color-accent);
+      }
+
+      /* Loading Spinner */
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--color-primary);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 15px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* PDF Viewer */
+      #pdfViewer {
+        flex: 1;
+        width: 100%;
+        border: none;
+      }
+
+      .pdf-actions {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        background: #f9f9f9;
+      }
+
+      /* 响应式 */
+      @media (max-width: 768px) {
+        .bottom-section {
+          flex-direction: column;
+        }
+        .captcha-group {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .captcha-box {
+          margin-top: 10px;
+          height: 40px;
+        }
+
+        header h1 {
+          font-size: 22px;
+        }
+        .bottom-section {
+          flex-direction: column;
+        }
+        .captcha-group {
+          flex-direction: column;
+        }
+        .captcha-box {
+          width: 100%;
+          margin-top: 0;
+        }
+
+        .pdf-modal {
+          height: 75vh;
+          max-height: 75vh;
+        }
+        .pdf-actions {
+          justify-content: center;
+        }
+        .pdf-actions .btn-modal {
+          flex: 1;
+          min-width: 100px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-container">
+        <div class="logo-section">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            version="1.1"
+            id="Layer_1"
+            x="0px"
+            y="0px"
+            width="100px"
+            height="100px"
+            viewBox="0 0 100 100"
+            enable-background="new 0 0 100 100"
+            xml:space="preserve"
+          >
+            <image
+              id="image0"
+              width="100"
+              height="100"
+              x="0"
+              y="0"
+              xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAIGNIUk0AAHomAACAhAAA+gAAAIDo AAB1MAAA6mAAADqYAAAXcJy6UTwAAAAGYktHRAD/AP8A/6C9p5MAAAAJcEhZcwAADsMAAA7DAcdv qGQAAAAHdElNRQfqBA4HMhScsdU+AABLxUlEQVR42p29d7wlR3km/LwVuvvkc24OM3MnJ+UsgQIS iCAQMsYYMDZ4ndbrhc82tsH7eQ1er3exza6xjbEXJww2GBMtmSyEUA4ojcJocp6bw7kn9enuqvf9 /jjnjkZCkvm2f/ppzu1QXfV2Vb3PG+opEhG8zPGSVwnUu0rA2j1EgIAhECJaO7NWCNHzSutdYgGd dal38kUrwgyASIH6FRMRgIjQawIRgUiYCYBSL3gQAAEgekF7e0+tlQZSBLxkHUhYhNArQ5gJApAQ ASCB6Bc+fZZ4hEByph6AZ69In91eLyLCRmkB2DltTO88Q8Sz1vrsMgGIFyEhRWCBQCBCQgIiTapf LntPINLqhxvDzEopAMxCgCgSz/rF7nzeU8KK1FrFABGiF/9oxJ49iWKwIvND9/g4zhpL2hgIICKK CJR24nCgZqLIJykRZd2OOK9zkS1WudNpnjgGZmOsGF3YMEUmaM2cVEB+fH28MCfNJhVyYamq8oVs dTU+eUwXcoXxcfGSpVlQGwSQeW/X5HjmOPLlfy5UqiNXXEmlGoD6Yw8t3vfA2HXXRuMbTn79X7tz s5O33FLeuXP6+3cF+dLQ5VcAYPZK6ZWnn/SLCyqwwWDZmCBttDvzcyay4cAIsxQ3bdSlWnL6ZOvY cVsrl7ZvZ5MTsAKpH5IGCTsnLErbzM/ed296/LAsL/uVhq6UcyODy3ffK3NzMEqLIhATk9ZpK47G hnU+l7Y7OrTZaoOSTAq54pbN8cx8um+f1srYMPVJ4YY3bHjPTz/xBx/y0/PrfuzNy48/5g4cDvI5 mZya+vmfn7njO6tf+RJFRR4f0y51zTi69pp173p7Zf2W2Xvv5+mDOspraCJNWXf64x9X3bbafV5h +1bjZfWeu8PpWRkYctWSnDhl0tRNjOV3bl9+ao/OqPza19qBav2ZIwMXbV38xjft9AxZK0GgrfVJ gm7MzIhC5xBdd22XObn/BypeFWULt7x1xwd+m43WvRGKs0cOyPuMlOmcOnr8Tz+W3XdfsLIIrZIw zFIWUF5DK0Bs4LxlpIqTUOuo6DstE8ekkGoYBHkyytqFuB0UqzlrXdwWeCXc9OInxqrNZpRlLkvE iyMlRLE4FxYlRzrzg9e/Idi1a3XfXnd61pyzu3TTjZO7L3rso/+7c+e3Amu42fIrSxqqalWQSZuR lQLVbEUwFBnoIAaickk8i+NUEmNh6p2s3TRClbDUdc4bpTQxkCqlM9bKCxFVB3U+aC/XuzZXff2N Qb6UHj0aHz7a3bTxkj/8I+Ty1BtFYPaelAGBQORcqrXd/8m/zP70zwbGh5tb14UXX1q99MrW7EKQ ywt3OsurxaGJ7syJzqlT4dBIuG59Yf2G7sJSZ/oUJCMyUSHXPPDM8p4DG9/+1ty6jWzD9vyMUiBC 1q7zwgo/8rB5+OFYW3XNNfnLruSoGOQjiRMf6HBkuLZrNwV5AMKelAbADMVeuk2fpL4V148cIi3s su7cQlSp1nbvWj1yuH1yOhiu5cYnQWG+Vko6bVgTFopZq9M+cdQk3c6z+xe++rncuq21N70xJUgu iKpD2UrLN5ayLBm/7no7PFI/ciIq5io7z+11nGRpBUaHlRKDRUiz2vc3n1D5aPu7f945pzWBxUva ffZ3Prj3/O37f+5nJI5FxIuICMuLH37thrW/JGsunX7wIXne+d7hpD5/6Lfft3f3xkP/43dFkh8u zTl2zjn2LN57z8xehEX8S1fgR6iVSJLM3nvH6pH9L3N/r42pc867zHvXK4TZi2fxWaf74Hve8ciN V8VHDrEI+8wQVOP4ifiBhwqBzl17FaLIpV4U+94oXdPBxEwEBqGn641efOie2X/9SlBfbDebpetu 2PqLv5q4jAiKSSAwWiXxU3/w++qB+yvtblwdHrz+BiBIslRpDTCElAAEod5biAFFOKOJWBiAsIh4 IkAUA0Kkz4CF5yYTCJiESOtkYfbUF76UHdjfmZ/e/L73lzdtT7NUaYLIc1oc1FN/KXtRWisCCQnQ AwNEAuXZm1y4653vOvJr7z/6uX/a9TsfFmgDwIZRnsClyvD1rxVAaShlBNIbqL0aiVKAGCiBeM8a NP2d2/WXbitWC8XUz0w3Wq+/pbh+o2dWVoGZSCXNtn3ssaH6EiMMt26tnHsBe1hjFCmBOqNppA/W 6OzGA707iHrjGSLQeg1kkEB+6Hb2rEDHPvf57l/95XAxtEnn2Ff/+cJXXGm1JVpDcNQXca8cTXoN swAkZ+ZxAIoBhYwpsAbTM+wc9TBIurTMSSdliTtd6hVFRKQI6jlFACKo3o+eTt34xtflNk8ZG1AY lkaHo3IZkF6jexVLV1Y463BkEVA6Pb1y5JjSoB7260uHgN6LiJ4TGM5UmdZqDujen2rt5A9hx36P rG3bGNZKNh+ZIBfpImD6FXruhWert7NehufeQIBAAHSTdsIuNz6ijBFmBaB1+LBpNQx7xJ0+MHsp /AYI0BOWHhjpaHLwLN6DxZyN/QiALZbE5sWDRGmtgh4iJfzIh/rR7xbAQwCwCSTzJJwyF8ZHe133 R3/lWbIHgMLwmFOK80UARKIAKMWWtImT+rHjL9+cNUuDAUgzDluJFlLwLu1y4l7wqK2VgqEaMlaK srgVNxr/tzU/Wyayhn3kOTOrXzcCUFg/yUNVZB5ErARnpqnnbn5eCS8s5cxVAoBwclKqtb4NIFAA bD6faRKrC7Xa2id9SWERpCes5uG9EjcNLIlmUeyeb/cJdK4UjIx4zwKnrY0KBfz/6VgiLMzCnn3/ P++9F8/eC3vPntkLswhDBMwKYJHSrgvt7vNcV4qi2kePMjN77j3CnplZ2K99MQGEIcx8xn48IywW YYCzzHpOZxcBCCkDQAeAEqe1KRXRn/5ephEEUgDax4+qNJUg74XDWjWolhlMz5sFENtIKVKgTOCF 8SMcgl5VodZs5hfKV5/539lfh1hEETX3PJEcPIRQsWO72lDeKRucVSP05m4S6ZmfALTpmZO+5xtg EUVCUArIVlddp61yUe9xA6C1OK+cU8r7uPNchV+6d/UGb/mcixaiL7FwbySTMpDnqiTMpNTw+ee3 vvlNAMoY9aPNWT3zGUm6/Mwz2eqyDQPXbKVxXBgdWp1frE1MJHGsjbHVouukvuPLO6ag1eKhE5MX nnPwr/++9bWvDLVbpCChxcFnD//+h8qXX4ko0LmcrVY9kaQoblqvSkWtQwAa0jx+lIUrGzeKCNGa Ueq9APnJERooZWumuAHA9aZ4EW11FPb628u3SEgENHjp5c11U/74UWVUsrgYLy0VRkeYeQ0nEQDX bPQAiEkdtztrHfPlRMXMRuvW0QMHf/P/qTTbWmlhB0jXmNS7ThSozIlSbA05QeaX1o1TGLZOzqTn buW9h0a7sVbKK0WQYubc1/+t/fXbUmMcoEp5sBEvbnSk8GNvGN95ztFvfqdo1ML9D2jx1fPPS5uJ KZZkx9bBSy+v7D6PgM70nO9m666+QgAWMQBkbll5b0dGSxunep6hl//4LKIIjRPHs9V5Y7RjD2SK 0rPaLKQoWZqb/fZ3xq0lhoPzaYazvDEvPQoFQOPJZwYazVo+YCcUGHgPdtoG3GUlOlPg1JGCwOsT JzLCkA279z+cKxZcYJVjyJodHIbeu7LSabHosk7YanlItm+h/jdzCw611eUu84BGLlDdE0ciZYn0 /K3t9pt/4vyP/C8ArtNFki4+8nj+uteByHCWrZ44PRSYpZV68+TMwNCkiLy8vHpoRJuch2bx0Iri GJ3uC4awDgIThBAmj6BczE+M9CTBL61BhPpotX38uOLMc0BilpMGl2qBLcXNZYxURIVeIbKWnacg dEtLYauxwk5t3xbNLeWyLkFZJq+VT1r+lVfnL71o3yf+duqtb9f5aPreu9Zdc+3sd+7a8tY3m8HS oU9+Kler5qemFh98TMWNYqMeQUZFx4VCryW1XbuiybGVp/as9ynpwChryzs2Jg/eoaNcVKk+p1fP KHnpuT3XPJMCT8xM5U0bwg0TyZ6lfJQzS435p5+e2riVuScNEYEp1WoXX5ju3RsUw7TTiReXcptB ImuS6mluOrsnyxq2CEOTCSmo2HPwmptHfubdplhqnDpZ3LCebEDMOgi9y7S1rblZNztDypa3bzv2 N3/Tvu2rNUssmoEF5weuvWb8be8OL742NzFmC8Wxt/xEWK4OvvUdQaEEYNuW83KVki1WRpbrbmH6 6G//lpk+0TC6es55ANizqlSkVDFrkNYAyA0PdECklJAQABYWL0r18GcPggqe8x4aKAWk83PdkzMF Y0WU5sR26wC0MWt3MRitlZW8Igbgve8mAKAUM/e0c89K61sE0h86PaODMtakQNKRZOCKKwq7z/PA 8IaNZw/X3kxcHRjGrvN6Z7b99n/ZX19q33lnPtRdE4584AOjb3yLeDdw3rkAPGCjyDPbQilzDlCl yXUMZN7pgaqtFNzwiDt61G0Yqlx0LgBFEC/ilVc926+nDU/Phdq2VpbjmYXCpm0EUlqJSz1n3E3b M3NK66CU684vd+aXoqFKUMpnq6tz/3Zbrt2EBnkfWtO67Zv7H3wCGqpaiAuV7T/z81qbzpGjFU0i pMkGhYjjjk+6tlKD6g1lCMDiBAYEZncGI652ulHGCkRMaRwDgHOiFBEEdPbEJ2vPMEMHUfmKK+p3 351TPiFf3bRN50vsPNif8d6TUhCxxgAQYQ1RSrHzZOzArl3+oYcKzXT+7gc2bdwpIqSN1IpmYFCZ gJkNANJKRHLCrlEH4DuNo1/6QufJPTrr6mYrPTmtrLL5KGu0uB1bG6oo8knHxqtRGIgQwHml9LPP YM9TolSCJBta5295ezA6kjcBBEyU42T5M585Va+rpCsbNtSuvIzyZecxsHN3fssWcY67sS6WAEBB BBvf865Thw5m+57mQBc3rOt1ybPDEM/NqXTGzmMA7WMnIu+0snZ1afZ73x945XWkei6G3lRMz3uE FMDU69CA3bK9UShVVxYX770XP/UzLDDW5ocGEEa9z2IAFMZHYkU6y9zyEoB0ZbH+T58bWVlSRml4 o0IhkcVlFRi2hKzt2iuRDcTkuqS0EAn5bluHGmGkoCwHHAYmUCrKmbGhbK8URIqw7t6HI+pqIN7/ bOO7d0BpKGrmq9H1r5DUrew/UD3/vPJ5F6r1I7ULLi9Oba288fX1Z58IEPjM9/sQ5IzJ/eJKFKDE G99T6bowOrx2UQEvEYSAEoAVsXfDN95ARw/W//YvS6M1KE2K4pPH+On9LjSu1TDFsgGwevRUTuBF 4sVlAK7bNr7b0WydiEZK5EGqVuPEwXkul8KxocWZBcuO27ER7ubCcOOFwfxMYWkFxqRZmkyMqVwR QHDBOdPfvWOAAO9AjCAQJ5IrqkIocZcyb9or9a/+K4LIDlaWvvZvi5/7XHdq6srPfi4cGlveu7fA 4si7OEZfF7ycju5ppOKuXXWDnPIC1YeNIv8OFBIhQGt66pOfVLd/I2+ClAVKNGjhwYdx4KBsmkoa zb6wXCcmUkq8JF0ALDrefcH4FRe1m3E4OjQ4vj5JXXlyNG61JPPRQC03Ob60/0igwYurQozh0sDO cw/+0UfbX/liITRxpibf/OO2WnNORm76sXD9xijMu06nu9IojA25LKOomB+sZK1m1kiVxoBLHPTA 9m2t40dX9zyZEVMUdudn1JNPlpWeU7ymPunfAWmKAN88uNciYFE90wU/wkEQRZS1VtUD95VnTyZR JZra1ntTZMNV+PzGqWhoEL0JPjCWRDKtqpvWAyhv3nrpx/7MRNEL+nlu7bcTHr7k0he8MqgNZCAN WN9dfebxwTfd4jm1gyNjr3r9j1JjAWqTG2qvuK7Xh1YOPOrmpn1odCt2M4sAAH6ZIdhzfmbN1dVn nh0nUQLvXObPePbk33OmkCSJ9qlWgSvmRy+/sKdGcqPDPgyUUTqI2IsC2Luu18prpXpGkDYmioRZ mKXvGffOuSzLXJq4LBXHWZr6LPFpxlmcpDHQs2VJBEahc/gEgDAIxXuXpuwy8V68BzOzY3bivXju v4KZmSHS8zE47xgoDFVtucyeLUj3OgjJyxqtIsy2VBravkV8lpJa2bqpcslF6CHDf+9DEZB1Or7R iVSoF+rHv/otAjxg1k3IxGT74cdnvvR5pUkBKnWsMw68LD60R8DSgxVrfljSmrQmY6y1Jgi1Daw1 NgjIhjqwyubCIAdAshapnhvU5OLOyn13NQ7t04pMEChjSWtSPZ+7IihSihSR6v1QSimi/p+9iLYu ViUqEkOIsk4TAIl6iVb3UIiAhMW3mi1hbo1PXvTnf1G74CIvjki9iHj6fkysfQbYqMCFAjMiUNjt Ak55b4aGx256bc6l89+5XVzXABi5/rX1hx+MGo2gWiEoiBcSor6jVtJMktSTbzy7r/7ss8Nbpjqr DRAVapXl4ydtENhSuTt9svGN74wEQcZiTESHDy/85m82cnb4XW8ff92b2RYoNEG1ena9BRAWrGVF 0FlDhQAmYdWftLs9NCvyMo62XolKmcBaKJUtzrWOHh9ct02ERb2U7facO4nF20o1GBtPTp50SuxI FTBKI11dPf6tOweb7dqu7WQiA6C6bUM9X3DNVuXCnQAcQxl0F06c/sqtYdpZ3XPINluptO3yMi2s zOZD9uzATRtwN01ArEiJDJtAtNUEIg6dFKBKnU7jr//+yBduIxu0tRp99ztKU1vj6TlVLhY3btTV sq0MgPrZD9559ACPkAZaC/PZah1WSSZRqYSX1vxrnUP1s1SIvKCWJEd+70Pd/8KTr3mtZ1YvlNcL 5z4iza7jum1FAEvQsw09B7Xa+FtuWfzbT2288DwAxrvuU3/68dH5pSQIkpVFAIFRipMjf/Tn/hu3 BqGpQZNRokiRsqUimJVRGTtOupbI93qgUYlPKZWUvVe+QIqUJasqIlieg5aSBPHHPt4E206SGZob HqZcRBdduP2X3wudI6N1seQh8AISBqKBgaBU5nZDgVRfp/HZLj85q93ou2YBgApFr6SodG512a/M 40c4RISI4uWleHY20MolPm60ADB7E4blzdvmdu2qXHSFAEaroLZlhzz2aJTG9bvvXffOXzj5+c+1 7roj9+y+XLWsSBFB2HPmFPtO3HZEXQvUhuzkBkYG72WlkTZXUStRpVbadV6QU8uPPG6WV7JGSwVG a8X1lk26ppuQsFRLYWgrC4sp8/Lc0v6n9iulYqsrl106+WM/Ea2bYvYMNuUSDdb49EkCVB+489lK 7azp60xUjAGYYjkjYccYmhi99Kq+IF9WUiBiwGgT2SAj9kpMMQdAW7uy59F9H/zNyvadKlemnlG8 /o2vOfKNLw8w546d3P9bv9G6747hbsdGIXHIStJut12synjFmzDctsNuWD+4baowtTk3vkGIybNr rHbry7mBmq5WdFgF4OOWW17q1ps6tFar5uFDK/v3izGS+fzWzdn83LH//fHaG16z/S23PPsbvzFU XyoHheZjjx14fM/uj/4xDYyBPQWRGRrxzELkxAHImJU4hf5UKmAiggdDQKKU6YHSXkKSwNuMJWMA YCalz57ORcA4EzJkZiFthIUdE5TA+yzpT6NLy4NJzEvzyeJCbnLCADh6+53u9AwNjHSa9Vw5ql58 VfbIwwEclLQ5xRXXrv+PvxBOTZCEtlbujYUMYOmPirBQCcfXcy9dy3sGEBXMZLE4iV4dhzZtG3rN G86MJel2CzvPLUxNRaPjgz/3S90fPNadOV1dmG0/8djBj//Fzg//vhchmGBkOCOBgJgBaJszZ/UI 3Xv52ozv2feSvxrTRweg2YS+Pnfi29/Yvv1XFfqh7DXtQQA04IRJhLQGMQEQT1mmhLyi3iwJwBuV aU3esfcADEPGXvPqpZnTpx66f+Ov/78Db7pF0s7+X3mve+JhpX2yfmrH733IjIyBIQTvmcSDelIg IiGCMD3nL1QK5MGemBjICOosL0E/LhQEA5dfyUDq000/90t4j3QPP3v0tz5QOX6qs29/1m7oXB4A 53OOuKBs+8jB7uF9Qrzw7LMkVNqwPvPJ6sLKxO6LGycONp95unDxJUMXXhifXkqOHSkszCmlFPu8 4uyZJ7pHj5rRYW0D9iJKCAJmaMXOmVwJgI8TFtb53MJ3vqVXl2BzntKg1ItywVQrEgbaBEEhB8DA u+qu88rv+897Hv/B0h23Fy+7vHPyKGanyeosyXLbtpuRUe98L39QKaKzPSRr08Gaz6v3sRUU0Vne VpK+t0qhl9Qn7D0IVpvMO6NtplTWbSrFWnmzFqCjMC+ebBSZ++8/tOdxp3W00mDPy1FEEJclycCo b7X0ykpzYrK+eVP3xLSqz5TYa2uZOWci89hjh//jL2BsyOaiOEkMCwgCDoLQZVluyzZVqdYf22M8 bLXEe5+qKitCUIYK+V5z8qPjUiqn+VCsBWCIDDv3xN/9zcD8jMzMHasvo96ITp+2+UiJW1pc9Ems gvxZOPWFhsNzQjn737OtXnrOlCVAE2EthqJJCEhWW+xZW+tPLy4fPDJ04cUATKHkoEmpEku50fKk vUBrpZ0AyijjFma8DahWUs2l7sPTZR1opR0ZgZAQibZGDTWXsTzvwEWliEm8N5oSl3W944ce4SiY 1MqJwIvKRaS0Yk/sJViLzmacdtPqRVNBucIsptcZooHB2BSqOZs+9FAxjEwu70VYS+b8WtLp/5/A +5qqOeMeeTEh9wStWDC4c/fy1Jbs0UekVjH5vg0aDA+dCK0kTZUxaXhoPbkxzrpq9lSOxSsqhCXK XLfVZYNiFPnUJQxrDCCOoBX5LJXMp5o9QClnUU7XBtuNujn/vPyOHeneg3zs8EojlkLoAfEenlUU rQyUhwYGGSAgXlpCGsdHT2XLK3agZgAw0e5fef+hU9NLD94/8hu/uXzHd0sHDlHedhOuTKwzuYIT 1meaesY3/+8Fgc6Kkr90CnAvDhR303qbFCQwwUCld7566eXb/9efd04eMSKd/YfiVrzz1/9zvLQy 8/Wvq0IOzCe//a0wyJcuuSwohqf+9evRWFkibY9NFwSKpJuk8ZbNamR9sGEyXys35pYq559TOXd3 e2YhXLeuPLXFNxqNvXum77x3aNuWwtYNaTtmkbBa3VCu5cfGM59pbXW5pDdt9odPtI8fqw7U+hoX 4ppW5W9+68jP/ycaGVn5bx+qitEOulhATx+TQn/SOuNkF3ke3DkrJHjGpw4QPCklQr2wa1/cAumF LgRgr/MWoVIQ6rLrpACExZQqQ6+8BrjmLMHCTKJy/iW9P8uve0OuOpwbHwcQ3HBjaWQkrNYO/s8P db/1rYLJNbZsnvrwH5TPOb938wQAwAP5zWAgc45KpdqV19SuvOZ53653G0PgOE1Km7Zs+Ilb9n/k f/c0kwHEKL1wz/cXv3vnZX/2MQBBteaDQHmEpBvHTqLd7sH/3uE6DXZZUChBBy/njXvuivIu08aS 1r2ZoBfDpd43UCIwEAWjhVkZo22w1mvFM6OX/a6FABHVy9WDCJMM7DofgPNeCYYvvNT3EguCSDFW fTbyth8rn3O+S50y6OVOsQgAByEipVW/fFnz/Agg1PvepJQSMkHYOLzv6N9/emC8H1E1PVkuHXrW sCcbAODMkTOiRYWh2ffMs7/23uDiC0pTG1ePHlWL8919B1Wa6KExOzGCKK8LxeIlF5nIrj75ZGdm 1paLxYHawoGjkQ0YKE5tLFxyaXnHrmxp/tT9D0284kpTqtQfeqB1/GAwPjH+6pvSxSWyRJJo50Ak WvXmRoEQKS3E5rlU+zWLGwBIhD2zgtKkRMRzBtbaELMX5MLg1D992Z5/5cCO3eIdFIREv0hSF/p5 tmeGwRkMxADQePrp8PgpWj+RNZtmYMiA4IF1F1/R3HhnWBsG4DwzZ0YbT6bSdZ09P2g//tCqzqs0 M+KrhgjEx45l4oUpA8/9c5406XYrAglQ5ywSsqSdMi2hxYnR2mWXxHsPLD35pLz7nXZqavpjn6hl yeromDl+evaue6yPVWTyp48bE2TOKXWW5lRnJ6C9UDVAkz6TeqdgRLFw1okLpEOWQnOVmg2gh0fp pfx/Z116fiwDBMAQwsh0l5cbM7O5qU1GBAZwq3U+eWLhvgfXb9ikBqrzxaLqxl4yo43jsIosUBnn AGhmIUXkoDiwuRCUUeZ8Jh2lnBOnNCbGM23dzEKETihKT8+u3H5Xbve24Z3bG7f+W6lY2KA9Rbly vb74J3+UV2Q9YmKOzGldiC67MlcbgJyVy/rSuuP5WXw9F71wmomIKJJGp31yrnZpbyall/Xf00uV 3222u61usHFTcXxMAGO0jk8dO/qJPxteWVp58OH173xnaec55/3Jn1J7lV1mSsV0qTH3z5/nEwdI ayXWGOvSxIwOqUKUPHtMZ3DVamqodPXFhcmtShdGr7w0LORPf+vO5T0PhTZwq7L5/3lP4ZyLT33t 3xrfvC1ZXm47pZS4iHKvujp2qgsV1IqtuDv1hpvLF1/CWumXk9LaRHhWq6QnKgF5tv0UTwBsjMb/ zdHzsgmAysUXrezeqR3y1Rp6Pvj2/mfzh46YXBBWSgBMLjd48aVn1ugQULv88vbMaWMtyAZhmMbd cKRiC8H0/U9YUoUN62FMft1EPycHALDhZ9+zHu8hznzmVRhlXkZvvHHdm16frax2ZucMtNNS2b4D IAETNMAC5T2UpCARoTOwVkQEQv0MPqEfcm31PNKkdbLaXmh1q4pNnLRFDdbKAjD7XkHquVVO/cVN EAap/oue7+AnpVzmarvOj9/0upP/9EXnMtNrXnduVmvyDrZWAADhzGXW2DPf19aGqrWhMwUFgAc8 MHHd9WdOOueEMhISrUiQsVfKQAxZzVmmNSiwzErXhiprRTGzQASkvYP2DkbEi1qbXUS8MLEoY9Ya 9CL9jQBN6AUPTLV01cc/fvIfPz33ta9N/vzPjlx9LQCzlsyGF0BD6kfFe/jTi0B6OQMEkDAba9L5 ucXv3R+EAVMfOiButiX2gSUKeoE2aGMO3fZlPTtN+UJ+YjI3NMTeKxZVruXGRpN6IxoejJdXbS5v axWXpQrO2DwAD0izKZqCfNE5Z7UBPKzxLN6LAhMRC9g7D1GkSMOQhVIsZEmjv8KCBV5IGaWh4FZW 0voytzrx8nIat4ujI0G1osOc915pbQK7dPBQ58iRoFKSztLqwRNVbYJKWbWSmX/9IsPrsJS22hSY kV3bl09Np61OUC6V149znLROz+RHB4LBIZ0rBYODUIbFk6CnbAmqve8pvWeP2blTmQA96DD1Yzcf f+Ce9AePBdyfKrXn1te/Ye+7y+SDVOVWbSBg8c5VK2ZyIptdijZOpEdOyXBt9HWvX3jskSxu53dc NP7mNxWmNp/69jdmv3/XhR/87XD9hpl77z3xxU+PXnf91C0/qfvpBR6KjAoM4OAlyZrLM92lpYHt u5LW0vRt34zWrxu74Vr2pMS3Dj079/3bk7vv56UFnXbQdZ6xkjMqF2gdgiFaqSBI5uajTjez1oYo NLusULGm++QzqaFMK4goZglMXCy5Vgzn2lbXS3mkmeq0mmGYBbkkyAXr1hdufPWmn3gbwxL1YuBI Ts1ozvzouM6XCDAMcCbW2o4hWAtAFLk49km3CLKsJetyt2MAAxO3puXEKaPgDu0PAuNOHJx+/EkO TZAkM9+8vU3JBe/9LTU/p775b8c2T+54/+/QzAn79W/Xm52NN//44tN7kvmFyWtfKWFx+a57pu/8 zqaffke0cfsz/+3D2RNPnvtXn8xm5hd+/8OFa64aecUlyFWbex7b/+vvr9bnykTISFkVWd2VjJqs 2ppJullmSFsFQ9YpJD6TRiLatIwhLwWjqqEVUoZBijtJwvNLPdSWpWmykpGNoCMdey5F1fN2tWfm 9v2fj1fWTQ284mrH1HN9NE9Np54233yTMka8MxrYf9tt/MBD4WCpds42AMTKhPl17/mZxXO2Z0za 2tLESP3Z/X65Wd682XmXZSl7n6/V/PLK0LYt1Z27O3NLw66TO/c8AIalHAQ8vQhAOqv5KAxM3jVb xz76x9kTj9u//IvqORcd/MjvhYcPTQ/Vtr1310C3k8VNdGPpdmuFnGt3smYnylXnvva10dWlXFRs V2p+91ZXX5w5dKy07QIKgnRpsbPaHL3ptc3Dx7v79+liwQwM5qfWUy7qdOLKth22VFq+957mQw8V ui2r0Ba4K15JQ8OUC6KhwcJgdXxqky4UO8vLyDjasL6waYuABr7xladvvfXaC6+QvIH3AAauuPjI V7908rt3bL/uejLWANj46htOfed2PrJ/9cDRwWsgYK/16PWvH73+uWDyOISRKoQvqmzzvTkeAnB3 ZYGIlAPAzUOHQqLuyWONQ8/WssxkLjk9Izt3FV1SikKnddZsxMurJsoHlXK6spIJa6ODXLF78lhy 1x0DVreSmM67dutH/rtrxqvHj1d2bNPWpI1mt9GqTG32SRwvzZswCIslCnNnRzRGbnrtvl97v7r7 fq/ZXX3t9v/xR5QvnpnfFx96IJ2Zm7j+xr524swRTd701rl9B+afeHjkFa/0Guyzwetu7L7z8dmv 3Mr1uh0eVwDa7SRptayifD4PQIiJ/ZpNmfWsS2F5nqReNI3AsYC5FWuGLkaSZf70QiEwdmG+88xB jA+34MlYZa2zuhMGpS1bVWCUiZB41+3aSpk0sWOYsDM7S40Vr2yo9cq+p7pz86Y6OHjBxSoqMQVh baQytdn5jGxQnJiKBscRFMRTxpyxdz713kFCb3KAbygzdPMtKl90WeJcCqCxf/+hD/zW9K+/78QX /hkAZ16L1mQa+59cvf1202r3YpqkdbI83Xjq6Vx9fu7b3+lrwyhUxmcE1E9MjwIM5ZcW9//9p2yz HnfaUaViw6A5PZcbHjKDNRPlskYrnZkxW6eCciU+eqywbiK/7TxbqxSn1ospKpATsYSs2Urqq2Kp m0quVI2qA23xpJU2hoxiEAWBDou5jeviU8dywzVuRRQFulBQoQ0Ghqg26OvLGpqFekn93jtNSkDi PcBGkYgIOyINEdKk++mDCtCAKA1xXo+P56fWCWBUP7Hed1oDxAXCwiMPb/jJd4hSJGKBI7feVj12 Gi4lQDzIqMaeJ2jPMznRjfmZvrDASomwQn5iGECozbHv3j73d5+YDE1OFGmttC4pAkvqpJN5rTi0 yO4I24xQJAavmnCRXPmtP3nhB34nzVIKTGNmZuNAtbhhKjn4tNmya+CyS2d/cJ9R1mjTmV/S7SxM s2R2wa0udo+fIK2zLFt5+iA1Y0/EPtWhMUGkhePMDd3w6ty6Tc57pbQ8Z0xr9PMYqJdfyejZxMRC EIYip0iMwlKjffJ0fstuL33cH1QrST7UKzKwfgIgYd9bN88rK2WNldu/nb/sEjs4AqDx1F5K2/Hk 2MZb3tQXVjq/rDrdzNhctUYAw9cuvoTf/5s0t8CrsTt1whw/VtZIlOL166Jt25OVenv2dG56tgp2 hGYurzetn9p1XjNfBiQaGGQCNZeWv3Gbml1QTHZ8JDe1ToWWmWHN6vSstLqKOK0vJqdP2tMzKu22 ntqnFudM5h1pZfXyU8+44ydNKUqyTnXLprUAlidtpBu3FxaiUtllqS3kxItSJk66uWoZ7NixinIg DUlzjpWCTp1yAkAb25stbBSS0VYom18BAK29eIKwcBgGjTvvWrzqmnU/+ZMAdObEO8qVgvJAX1id Y4d1vOrG1pV37OyN4erO3dWduwEGs2usTn/hsyuf/kfpZOW3vH3k7W93aYx2Z/Yzn2r+wz9iw+T4 738ov/0clSv1oxLlQcdcPT699OEP5612kfFhBKiu1i7Q4dDI8JZt7cFKdqo5sH6DaMMkVR3En/pr SZKoGK6uNnyclDesaw6Wud0mZVQQANDGrO7be+Tv/yG/Mu9OnMxVBpO0aypFnzodhEmnU1w/lnRi jpNobIKKVbc4T489ZKzV3q1852utfc+wcNLuFkeHkmPHC/P1KAzbz+zr7N9v142oMATyhkIB5xX8 4lwf5DNFQW718MHj37lzy7veZQCo4dFOZUyLZscePSYJVqSyZl2FeV0dLF9zw/HPfDZXy4dbNjHA ZILaYHDeBbH/p0SL2bBO50qSObIKoDhUq+NjcZKSBDnAc0eNDAKIxidXKVSk49aq68S6VAw2bAiH xqUygJVZOnEqU0GjPBCcv1ubwBQjFPPcamsPbrZ6Rkm+Uo72PFCdXwyDgltZSjmjk0wmBKOmfHr0 6UApReSeflSgI1EUKhYdaZ3e8X0vdxBLpCkmUdqUtBFN5bnjxz/wq76UDzZu2/xLv5IbLhE7UX1D AkDqfdJq2WuvGrnikh4qkonXvYYf/cHKv311ee/e8u5zUlKG+dTn/+nol7+y/dfeO3rda2wU5MNA FKLhEQVYIQBBrZrmIh3lAyp2Thw79Im/KAwPTv3ye7f/x1/hn35Xa/qUJr34J3/uv/ft/OAwgJHL Lz1dLlBofdZB3KWBUn7TeLpcZ+8yUcn555be/OMTF10Sjg3CBivPPCunllAwJnHLjz42+ta3GRX4 yHTDsOOylupQJm7jJMfdcH5Jk2ppb6GREUG0MsyeBdaRGBJIaFWXlTeBJC0jihy1u7GAhShorDKy 7sOPPrZnz0C1ULK5lrjBsZGesMJd5y5efc0FH/wv+a072XmjiJrHTy49cG8U5Ye2bASgtG0fODL/ d387NnOifeBZXPea5r591GkJ6XhxKZzaKMQEpMsrhrvxQr3b7LZPHOWv/Wu3Mrh47sXZ6nJQiILR Ie647ORJG+rOgcPpzEz9qT2GWdtAlSq+HITN+PSff9LPzZdXV1LnyzfdPPbjP3EGhISh0ZbhVWD0 ysED6cqyHRwz+dLIL/8qL87mK6U0zqLNmxWo/oNH2svL5bGheGU1EOW7SbvZrm5d31yYjh99pDa3 HECtRIXgltePXf2q+rFT1igbRI1Tp5PGqg6i0sSocKbn5gYHBpu3fUOEQg92CQDnsw23vHnDTTd6 HXrPZLQBgCSNssTErWP/duu5F10GgHw3F2obBVpbAKv3PpCLu51clC5OA5f04hTSXOW4VTz//Gj9 mJs7WiqXYXTr5OGVz/1LeWXeh/nAS0WzLpRaDzx4+N0/FaRZIQglMHAQFZS4m/zLl7TVURRkIu3b /vXY8SOu2eFiaeptb5u/+6EgSVCwCgylmUkAmHD9TTefEWgP6dUufwVe4mgdfHL2139bHTkc/cRb Nv/672bAusv6lwZe7P5Dzx5MDh80gtV9z44C8N3l4wcGNu4EFJSsQQctJC4kJK0Gp4kJwtaB/Wp1 1cLEx08CkqyuVJTtpmifOA2ASANITp9S7Fwx0kBrdj51GbRZf8nFUYaFT/1dQSvHbiXxhETB2bTu ukjGN0SVSpIlcdxdjld0dRRpHLcaWhs89oPVRx7QWset5Knl+bGN2xPRGtxy2cDll4bDw96zBpIk FkXWBtSHAZ5ZvCJ4UX1vgRAkE7E2MNWROFTFwHSe2Vt/8onq+RcCPq2vaqVUIceievrRZ5l3PshF bENhVlEgDz+69OUvzT/7xPxy47r/9TEhFsD2csmCIDLaQlDZuoMCCyBt1NHNtFHJ/Cwg1c3b07u/ 7/Ol6mQvpEQA4lOnFfvc4ACA8qZ1zXLeJUoVqxO/+O7gkvMDFt9ajefmFSCiouGh7kK9PD6BylDk 0olf+7X44OHR61/dPnW0ffxYZfu2+sHjFaOCUhEmlz//vOaBp7uBqokCs64OEhRchlCFOgdx8fwC sgSZ0/mCCqwQ6TCnAyuqvxxcCRxzWBnMjY35oyfCI/uXP/VX/vU3L+15orX32YB0UCklgtKOXZUL zi1dcElQLAGonLejdRtCrfJz8wv/8/cybc//n/9DlBbnSPfIB4Ck2XSZM8Qrjz+1znnWNPb61x+7 +574wfsDbQCKLr5o5UsF7ZzJ9TPLARQGBhNtl/cdmfTMScqNdrDtXD04JLY4csXVPm5k9frgq8eg gn4XcJkykc+6ZMy6N7+FbA5A+Yr+IBp8/ogoDA03Rz7L83MGijsdACa0vrk6942vNZ58rLt3v0oS 5QWFSJtAtNbFosrnnAJq1aHrX10698KgUqXA6q3b4/vur5YLzQcfWrrn3shJzQQZsc/Sgkd6390n lCm84urK628cvPZaO1QTUsaLaNRs1MkknZ3vMRqQMEgMgHj6mMQxSOUnRmAMC1ibLOmGTKwDgItb Nq8OjJnjBxonTgwAfWsxjDKR3HCVtMpOnEKSBuPDYSHPwKlv/uvyX/+9arf08CAVC1nmLFTa6RQn R9N2ouFb9cbYNVfHrUaWZJRKddd54dREOjvfadbzmzYNXv3KzKgmUFVCCs3jB+GSdH7h5Kf+pvWF L5atqggcs3gxVrGIOCZwCm+VgaKj3/za1Ef/aPTqNwCIRodWDdhJAcoRHKkWe/I+HayqQlHNzI4F kt5/5+z3vrvwmtdWJkct97momCVHmPmrv0gzv+7d/0GgqLccJZk9bX0mRNHAQC8I5BbrPH1am7Qw MgRoaNMNtLUYGh0DIPCAVfk8CVHmJGst7nkqJ7rz9NPtmZOFTTu6i8vpvmfHjU1OnyKS0AsR5ZTm PU8ExARUiVqPPcYaXkR5mjO6Wwhs1kUjOXLO+a+48ILcwMj4614df/rT+VwY7Xnm4Pv+U3LiRH5+ brRUiL3UqwNucrQ0NLj49AEV2KhaSzotytlgeq7Urg8kEtaTXg9NDh/PZSSRzpIun38hJrcKex4o TLzqejsycvrWWxc+9y8D0h6rFrv33d2NolzO9lI7ekbmqKSn//oT4dSmkRtukF5iiM88wJrMyqHj G5hJKRVayhc9VLK6CuH86HA0Mdg5QWZkFL14HtDlzBiTnpjO4k5h3agX34vuemDTW358rljyJ0/K 7GyrvlreNNlamLfOuSTLVWvdJLODg5R0XaNR2bTRFEvtlXptsMad1Le7Y5dcEBTLpOHSVLEmhXyr nT38QN4aa3Otbhc/+ZNb3/OzulpTYa597ASMjgYrPkmDYnnmi19p/ulHVdadP7C/CmRpKz51qqoA UUw6y+XH3v7Wwjnn9xK7SbD5P//64jnnzvztX9s9T6tCCOd7NC3Sj7uKIVONk/pjPxi54QYIDIBw cKCllTgu1spQSlyW3zAe7djkD+3rJl12XkEk8yEbmZt37YYiAxsUo7CrdNsoeHjvGSKVqi5VGeB8 eeItb8P/7SEsrrW8+tCjIwRigJQN8wL4zHXXjW591zvs6DoWZpbCxo0APNiGDGWSHOBSA4JRAAwZ HZmMJBTJ2dDfd8/Tx+cu/PRfm4HRLHOGlECGXnVjeef2g//42cLWTXR6uvkP/1ALwjMOKBEiUWeo WQyA3NjEahBq75sL08JdTQGgxCsnvrp1Sllbf+Ypf+D4kI0WPvbHp/7ur8PBUV3IY9+T+dB60ZJy d3bOMOeGamGpmDACJe39e5e/d3eStEvrJrK4k7Y7YSmnB4dKk+uWntpng5zPhflq2cdxa3m5ODle XD/RmV+OarVw3TqjA2V0PpcXOIL1JBBRAmXFLywtPPj45Fu3CnulFDMTqBfABxCagIkYvpfzs/zM M+39+wZ05NnHaVqMim7x9PTnP7/pl/8zFACvlGbng7Gpc37r/wXQevqRxhc+L/1FaH1xQVF1arKn 1gwAFHLQVounOEHGEhCJwIsh1T58DEA37ixwV3y7vBhXllezw8c8Z4GmbuptvmBrRbfSyGnTqq+6 Risays9+55uzf/jHlaVFsKsTlGdo1RL2pFZyRXS6WhGE24GBeHY+jqKlcsHFMcp53HDT7l/7LZUr 6Knx7KnHIpAjaPSW1XoTt3h1CTiTRgj02QBAgArzXWUq5LrLqwC6s6f14rJStpEvqKtfOffYY5V2 s/u3nz7U9Vvf/xsAmJk0mDP2YmxAhpQxSFOQJkXEvdf4lSceG/6xt0FbAyDI540KHbcQatLGsyit fDEECWvluvHwuefqj/xhfOq0e+QR9/3vRWGURpX6xESsTenaV6qgmF8/ARHV6mad2ALtR/dU5+dz gwP1UhHFikRBq9EIwiCqlJJmy2jt4i6lKYmIYlIQEekmA8q403PJiVPKBO25U+nSUhhYJsmY4yyN lMnZKCSx3gFgDwjTGSoUIREUt25cGBuUI8e1IgDVbTuXh4fi2enupp27/+ij83fddfq//9Fku7H8 1S+fHqqUrn5leeMOIRKBKA2gPT3P7URpeKDbTUOjYExOqfjxZ1yrYapDBkDr5EwWNwtGCRkQBA4I 8tt2rgiPbNtkohyA4VdcD2A+V2h953vedfSNN+z6rx8W1Sd5LBRrXRGVZVoja9Q7Tz05Ym29Ul33 h38YbtgIIG23jQ2CYjFLEhLx3olzWMvLJRt0Txw7+cEPDjY73U4XzK7Z6u49WFU2TZP0nHMG3/rW 6c9+rr1vr8uHM7d+zV52/eCF55yJmXsIwSnSUXVYmYInztIYQH7dZGHr1vTECSGVJTxyw+tIstO/ 95GRNI7/zydmP/MPlTe/ecsv/pLOVSXNRGsbRgYEkaYl8/o3Lj30aGV+IRconjty4gtf2PJLv2IA uOOzYepIkTX2DEuFGRgKC8WVr96a6YIarGkSE+Q7D9xjjARK1Z95ZvHeu0rbdoEoqa/Mf/c7I6Ft cgbAJ21eWlAaLo0pXzTFcuqyqFggEHs2xSKIzkSd+8KC8mnM2mgmXm1kzVZpZChXq9DpZte7/Ktu GHjz28Jzz12+7weVTZvNg98/8flP58Of7TaaOrS6WKSoGNUKs3d8v/Hdb+eXFwIVtOptAK0Tp1on pgdzuU696eMWIjP86jdJJ5n92EdrK411Qguf/cen9zy97pf/U+2yKwEoDwGIqVMc3PHL722/+uDs 736Iu20598JwYtyzMwCS1SUCE2yWJczcs4FMvphm6fDqUueTn/DeEwvZnNWIjGZSA0dPrP7Ohxeq ZTHKtH2101BWh4WCjXKpIglDEhHnxHsAgbEAxDkyukeJKiIAk8CLgKC1AilWipTmRtM3m2a4KjkL YSOa2jGA/KZthc27ACztfSL36c+efOheSZ1S5G1IUUGXo/TE8UI3zRcKHUWlzesAcKtllxa1Nsgc HFsVsOeRm99a2L1z5su3NW/94rCxfs/jRz/wge7vf3j8mtfUjxxTPkt8NnDNNbmRydzIutZVl3Vu v3PLr/5G/qIrxDsDgIwC0KVMqlVlc+JSAeyGSb7qVUsnT6KxbMK8LZb93LTm1FOoRTQxdVqms6JZ DBQ0NZNum9gbFVWGStu2xiePhWHolhZaSqcrc/nx8Wh8Q9ZqkXgdBdqEAKRHZ8oZiU+OHLWtRmJY FfMmHzKz9yAhRapx+tQEMvHiJTU2CEbGl4u5fJZYJzbpBtQkvYxpR4Hy2iatuBXHbmFpA+CU74oj FqvJ6h5lDsT7/JZztn7gnBODldm/+MRQINJcQTsBII22YWSKJMv6FGAbNrv09mO/+6Hcu9696Z09 T6lVECKhQr4IQJRyzlW376z86Z93Z+Y7c7NBuZAbHV198KGVv/zz0vy8V1IfG89dfhU75znxpEQo ZTd8+WW2MrSy96nlp58aYw6m546+/302zGVpykNDta3b0oUVSRPkQ1MoQFSapLmhSrfZMonj06er accr0QMlXcyLZ50rioBETNhj/NGkyYlM3nyLGRyC8tbJwvfvaB09wrOLYgClUB3Ib9qSGxyuXn1V BpS27Midewk/fE+yutiePlUeGullfnnvBLL+3T+ncuXlu+8MNm0Zve4GABwSC3JKNadnOesqG6na cBbo3PFD2Z6n8M5eKCyf75BYmKWTpziLoQNrNAAKc/mNU/mNUz3IMXTT6xtf+jLPzrY4rdz0hon/ 9KsvAJMMZBClGevWxTt2eJsPmgvq6b1VRzQ9lx45xKIhJFZ1s6xAKNmA2ZUJnPmEVBzorNllbcko mCA/XHXIQIoMARrEPT5FT2r0muv6bqnrrvedZjK/LAZKG5svm0q5l8bUTTq5YsVunHIP3E3Q3nsA 3vveSlCGYqXW/dRPr3vnOwDjmQEMXXrxTClvm3V0msgy2EhZZQShtpSP+v6szDkACWW1bZuUzcHL /P33ZCdPhLl8Kt4QNefmdJzy8rxanFFKh9CdJx9dvuueykUX6HIeADy88zoMCFTYfu6ln/grsjko I93u0oP3L338f5ePnUy2bq3+1M+wyhWGqq5VX/rKl/WTe3K2mHK3cc55xSuvCivF7lIDk+sFASm0 nc87F9lc4+gp7sSUj8AMpYiUF+lxD4gona/kN1Z+yApQuTDfOXy4/ehDUagCE+arAwC0tT14pZiZ KMsya62IEBhQaasjIo6gqjUKI5a09cADoXgR1SMGMwCybiLM+UKwdPeDS697sjw+fuy//0Hl9Ml2 YIkZxiiXgliDosAarZWy+rFHp5/Yu3zueVIpiNGSMDqxG85XXnHjuptu9kGBBHDe58Kh61+1/LnP uP37/fDo+FvfiTXintUDB9zDD5G1dR2ue+/7qlc8l2LtnWiFyXe+c/7w0dzxU1Rv+Lht8gWjtI+b cauZKxad82mnE0VBc3ourFRsrtCZnZWk0zxySNebcX01qpSbP7i/eGS/yRfs8vLJj3+i9tobup1O OD45ePHFFOY0oLUWdrKWxtZ6dp/uNB1pXRogbV2n1T19MlKcUT8HzgBQICbSbNL6qu92OicPFZfm a+UoBSWwmffQYJeBKEudo4x0QAgD33UP3CPCDo5EV/JRp9NaWknX3fTGXuFeCYSzlSXfXFVac6vl GnWUSpR5BIEtFj0pzrxev6m4dacHi+N+ih4UoCiqcewZgtGaykcENI4c3v+Rj4QLM2G1zMzpajNX zKUzC6Zak0LkZk4bl1KrZUUAilmKgbW5EnvKWyR3f2/pnjvgs8WosPLK69S2zcXJyUTb9de/CmHU czrR6qomgAneAbD5fG7rlmz/s6TI8loyG6AUUSt11Xf9+MilVy7e/nUjkG7a2blz9Fd/Pe06+JTj TBvt0kyEw0KeRNJOpzk9XR6qdZsNLDfSO79dOH06Y2bxSlmICDyRjuv1bGVFGUWZE4ghDS0AopGx pjFwrKKI8jkCaW36uIs9gOWnnsnmT8KSqVVgrQesUXLscPHkCUXKK45IeW1KRtHCnAhIkyEiZZyQ DnrWvfcuVoDSKtSA80mtWou72Te/kH3DzoteLpdrG/+xtHNXBkcA8vlehqHP0l4GpR4ccMwF0qvz 833o0Df0o2DgnJ0AuvVVFtak006c27a9Uh1+KffA6HM/3eG9T/tDR89kv/a4bRWQzS/odscYK53U JZntMwNAWwPSmXhVDLXpZSnIGeZSACNXntddN5odPxU3EgXFzuc2bNrwu7/bfeZpSVIh3+1mA1t3 pO360v33543VA7XG8gopFeWLrZPHTSE0YYGzDJ67S8taRI+P5667ymTS+PYdYbkQVqqZ1lTK990L QO2ii+Y+G1ryaaPpU6fDwLfbmhQzbDFPuhfdYQGBvM/mGwDy5WJHgZWmdpKt1Kk8JGmilBJF6FHX Si9tgHoha6XDdHUpa65YDfIMYRaCiHhGoH03o9SLEIe2x2HJzFrrLO56ETFK2rGPE6UD6afD9jPb g6ERF5WT8uDmn/xxMiGSNBM/cu0N6tobzvIJgIGJd/wHRUJWifcQImXSVkMbUoEWJjhKmx1hjgbK ognGjv3E28komNwmAYMd+/6KjnLRRQHXG9HoqA4DAL7RUkTMrAoRemBdG8qIWRxZARC32uIZpJQN 8uUyKcJZ7CECEOwLdY/PfH1VaQMR4T6ZhtLaddvsWjZvsdpFIbDFXmahBaB1oDwHRjebbYiQ0oDm nieAWSvFXaeNtVm28uRThWtu1GGgf4j8g3r5IUF/fJxhNwzKlTM3IEC0ttKsv5A6CFhpBohB3Lfv PKAGa/XSQF2H57zljT0tpKoDjthqZJ1Y4E1vjhBQwLL61J6xt7yDmAgKWkWry0f/7E+pVqaoWNow Ofv408HQyIbXvmL+iX2YW1LFkLTKumlx81T7madycaKgQQKXrTz+SHz0ANebjXvvk1PHiuwQBvmj xw9/5E9HbnlTMFhtzs93DzyrjNZiw9bqqc/9Y2HnOfn163StbKpVpUMBoJFkaS1uLPzz58vnnu+U jp89ZAPVbXWCMFo9fsyWC8XNG9rHp7XnpNsp5PJZu51mabhty+jFlzVm5n1jhZv1bLVhRsdqu87t dtqisrAyVtq2g+OGYgdjdK6qAQ8wS3Fi07b//gcU2NLuXS7LlLWViy+of/mLQJo636eEapyeKYvR oM7JkwCisbElKE2S5zT52teRZWJVXaEg8Faf+JdPucWlgjFNr0iRCexKEPg0qQWBIzFB7tQd3znx X//rBu+dkkEN0lqT9Qoll3Rv/dL03bdLPkez9cionLWJIKwvJX/zN8s6nKuVqFxy1cGxX/zloSuu UOWyveqV894FKyunfvuDRhvbiRMISDw4J/BGtQTGeSIEIPYqIGXYZblgOhe5TmwcCNAs3UDN5kLJ vIhfLRW3/snHlu66t/29O+1QrXLZFXbHtoEd55jBURYauvCSvp+rx56rLECxotFrriLqcYcW8imp AmBEiXfli84/9YrLp++5K9SaAyvVimq2ldJg7zOOh2qV3ectP7WntG69NJp08nSYOq+p3YkXvAuG RyenttZvuHrpsSeMS5osxoaq3SLnMhupfKiazcylwUA+m6+3QuVLlXB0Mju+qDXM0qKZm13gA+Wb b1aAU+HO9/4afuGXmk88fvqfP4NHHwmVIwSaSISglWNWDG+0FqRAMxeqTFSuoONuWK8XtPYaGQtp HTjvWh0iyXlJO3Or3/9uevcDtaeedNpOP/ZwU4f2kldc/j/+W1gdYO+oR/wi0jP+M0JI5DPXhw4j F126eOtteZfZKCLSujiw47/+3vKeR3y9oQr5wshAfXqmXK0tHzhIDttvvjk3OTZ99/3lzRv90tLp f/kiDKfdtLBuYmL9puqlVxQ3TJ33x3+2sHcvtWIIwlJh9eRx47wplyiM0E3D4QGE+flHfjC6YSIc msgPDy0dORmF6J48lXXbu9dPVnftEHhLJEFAUVR71avLV1x88JN/2zl0AC7z7TQsldqdVmGwBmvS JM3ibn7rjrErL23NL9S2bFx58kD9kQdtu+VIB5MTulIKUkigCxMDiw/vKYyP1o+cghh342uScnXk 8st2bNsGUwxKNRFR2qK/RwoAqDBQWqukk/WYlkRk+e47D1xx0fSFu/e/7z+K95nP/MuS/Gfe/9A+ BHzmn9Sljt0LCP1fcPBL/F7bnYBTzpi5T6mcnSnNc9p17Y6kWdaJzxTAPnuRV3QTH3dfpGwRybrp 4hL79Ow6MDPzc3XxzonIyqP3PXPNpacu2Lr/Q7/T98Fn3ZjFC0RZBWGoHldhT0uos4j9lRATSEN5 7zWECQAxKRIoYUdCRKa3SsJzj8SBoLm/fvDsFSV95ufezgLSWyHZc3NBKQ1Fur+YC6A1Bh+AxIbK ggFjTY8vGgDIMDP1F9dDiBRAYdDjC+0REPe2JyIiiIOxdnDAw0McoCAMEkU9hs0+20ovAzPrxFoY AnauH77XuZxorSzHx2eS5VUzPCjIiDStrTYipXtkcL2tDQhMirz0U75UL4sT0IACGASIUiJ9pr2+ GM5aTERnraKi5xbM0QvW8Z9JiD6ztkkIvu98EKK1Vf29tadQ/VU4qves+D6FAvWChKLXKER74tN9 eknB8zmjiEhYvLCFau87pjqp08YGYR9nRSOjZHIqTVSakDChtxtCL54kXhyzV71FWQKliCFgAcj1 hdW/1Fto1YtQMmRNtALpcWTTGnNfD9aAQF764UysMfyS6nUPoR4jdb9r0XOPQlhkjS+FBMR8Zvur Xkyst0a4x4NKIhBi9LlmoUCiiAHFAuFel+9TaJPqdUZHDh7QJgq0EyFocQyIESAYm4h378j/4OEg S5pPP1K77gafJGmcKFIsFFZLvSytvkvAZ1rbl6GFe9E1fvTC0y/JhJU5Z41+qdJ71CSq3+tEsRBB nb3903NLUfXZvfR5hQDiHIxRL1YNAgJoCZB12s17vp834AwUBgAZ8c6WKxt+6h1LTzxRXF6a//CH l3f8i09dUl8JtM7gzdh4ZeOm1KdCsMYsHz0ZrV+/4Y03Tz/6kFlaRFAcvvEGUjR3132WSAcWNgoG qkncCQeHTKns4yRbqXO8zM2YtOUwCAdrNgzac4tKmLNUedeengvKeSkVSrsvql18cXPvnvlv3x6W 8zZfSlqd3JYpW6pyxuHEeG583MUtbnVVMa/zEVMOWdLY+0zWbZQ3rIcOXKdDWhSjPT3P3kflQv34 UdvumiiIZ+fEajs2pifWj15+VbZweuXIEfIqPzHisiQ+tRDlclkcp+26qVRqW7Yd/9Rn6NHHbSls Z93ipikA5F2qtJ2741uL/+U3RsOIHaVpBiWGRIkIIXUsXoGZDTwhEKQGWW1QL6+GWTcmw0PDUAYL cxYsQl5DkxYRHwQcBJI5mzlIphki7DWRNQJI6jQRedIgBfbKJ57Sic0DN7yy8dB9Zt8hbTXguxTi 1devPP5wbm7JjI6ZqfFufjhu1tX0sfyuCy7+kz9pHj725M//wmC2ykPDXoxud8kIaZLVFjNbG3DS 1ZySgvICrZwov2FjdOVVi3fdXl1Z8Vq7YkE7oUZMxsB55btpLq+L1WB1sSyUpukc3Oa/+D+Vq64l x06Tbh3bv/dXfnF8elYHOQexAqUo804ppZUmIRHRICFSGj5zcebC0FplWWlxGQCyps98T0QQzc47 15/UexxVRH3L2zNAZIySfuZ/7CUjVbAGzsWdOAiNCUKQZJwu68rWT/55/eDx7lNPrD56f+fozOT7 3j94+QXH//4zK089uu7H3xoiav/9XwbG+IQLELLsGV3niShQmsmR0iBy3jPBMjqFciPzvGXT0Kap 7FvfzIvv5Eo2TQP2IqIAJYohic802WYUul07zEWXbPsPP6eLVfLC4llrmrvtqwtf+iplGUJD7di1 O7nxYdeMk8aqDYiskThVmc86nWhyMr95y/L+faa+zN1EnZmje7M0O+Xhw9AMVLLMsXM2lwMg3osA OjD5PMikrZZmIZ/4JFbnnle77OJTf/upsuuQCr0XAZMhF+T50svP/b3f0YUBAMniTGd+tbRpnc4V CZj77q37P/oXRfG22yi96c3sEd95txGfRlHu/HMKE2Pze56kZluTdokUzt9qlZp9cv+m//Czamgo NzZSGB39wQc/GDQaU+/56ZN3301P72NBGIWKTAYXFCIMjVVvekP1ggtMruhYehhHRMR7JqOQZtJ1 ympO22m7nasN+iTLGis6ChBajlPpxHG9Xp5abwZHuosLbnE+WW09nz0P4tO007alcmVqU5amPs2C cgEi4jw8k7G6mAfgWjExMScuTfJj47pQPH3vvdY7Uyj0GDtIUzQ0FAxNqEJeJANIaYM+x0ivm5Cr r/j2cuZRWL8BoHRx3iVdk4vC0VHAetflOCVSLGJLeQJlrbYtFEBKAOFMMgYpHVjJMk5iZtY2BBEL myDA2uuEmfrQa41bRjz3dww6s0j5ORqA5+kUAcS7XtX/L47n7YLX07AAmLV6Ed3U25yDnts3aI1N RM4mXYcXVs/tnAUvHgKtzuIIZO6lxAjLGvoDACHqky88V6U+kOPenktnUTudJaweV7j0kB0xAAXF PXpMRWshEKA3+zCdYfB5TgH3N55cU+J9gl/pUWML+hzZOOv9YIj0bHxiT89RwlMPSouiF8URfejQ N5b6u431ALtQD2eSOrM9WF+yPTz7/PL6sR0h7kHYNSTcTy5QZ/nQ6P8D0N5yVlusEqwAAAAldEVY dGRhdGU6Y3JlYXRlADIwMjYtMDQtMTRUMDc6NTA6MTkrMDA6MDCRhFkDAAAAJXRFWHRkYXRlOm1v ZGlmeQAyMDI2LTA0LTE0VDA3OjUwOjIwKzAwOjAw+86jjwAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAA MjAyNi0wNC0xNFQwNzo1MDoyMCswMDowMKzbglAAAAAASUVORK5CYII="
+            />
+          </svg>
+        </div>
+        <div class="title-section">
+          <h1>公证处</h1>
+          <h2>债务履行核查函查询系统</h2>
+          <div class="auth-badge">中华人民共和国公证法授权机构</div>
+        </div>
+      </div>
+    </header>
+    <div class="container">
+      <!-- 查询须知 -->
+      <div class="card">
+        <div class="card-header">
+          <h3>查询须知</h3>
+        </div>
+        <div class="card-body">
+          <div class="notice-content">
+            本系统系公证处债务履行核查函查询系统。为确保查询结果的准确性和法律效力，敬请当事人准确输入相关信息进行身份验证。查询结果与当事人利益密切相关，如有异议，请及时与相关公证机构联系。
+          </div>
+        </div>
+      </div>
+
+      <!-- 身份验证表单 -->
+      <div class="card">
+        <div class="card-header">
+          <h3>身份验证</h3>
+        </div>
+        <div class="card-body">
+          <form id="queryForm">
+            <div class="form-group">
+              <label for="NotarizationNo">公证书编号</label>
+              <input
+                type="text"
+                id="NotarizationNo"
+                class="form-control"
+                placeholder="请输入完整编号，含年度和序号"
+                required
+              />
+              <div class="form-hint">请输入完整编号，含年度和序号</div>
+            </div>
+
+            <div class="form-group">
+              <label for="ApplicantName">当事人姓名</label>
+              <input
+                type="text"
+                id="ApplicantName"
+                class="form-control"
+                placeholder="须与公证书记载信息完全一致"
+                required
+              />
+              <div class="form-hint">须与公证书记载信息完全一致</div>
+            </div>
+
+            <div class="form-group">
+              <label for="IdNumber">身份证号码</label>
+              <input type="text" id="IdNumber" class="form-control" placeholder="须与公证书记载信息完全一致" required />
+              <div class="form-hint">须与公证书记载信息完全一致</div>
+            </div>
+
+            <div class="form-group">
+              <label for="captchaInput">查询验证码</label>
+              <div class="captcha-group">
+                <input
+                  type="text"
+                  id="captchaInput"
+                  class="form-control"
+                  placeholder="请输入验证码"
+                  required
+                  autocomplete="off"
+                />
+                <div id="captchaDisplay" class="captcha-box" title="点击刷新验证码">FXWWN</div>
+              </div>
+              <div class="form-hint">验证码不区分大小写，请仔细辨认后输入</div>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">查询核查函</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- 底部声明与信息安全 -->
+      <div class="bottom-section">
+        <div class="card">
+          <div class="card-header">
+            <h3>声明</h3>
+          </div>
+          <div class="card-body">
+            <p class="info-text">
+              核查函具有完全的法律效力，可作为人民法院、仲裁机构及相关当事方认定事实的有效证据使用。
+            </p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3>信息安全</h3>
+          </div>
+          <div class="card-body">
+            <p class="info-text">
+              系统严格保护查询人隐私信息，相关数据仅用于核查函查询，绝不向任何第三方泄露或用于其他用途。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 模态框：加载中 -->
+    <div id="loadingModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="spinner"></div>
+        <div class="modal-header">正在查询中...</div>
+        <div class="modal-body">请稍候，正在为您检索相关记录</div>
+      </div>
+    </div>
+
+    <!-- 模态框：查询成功 (PDF) -->
+    <div id="successModal" class="modal-overlay">
+      <div class="modal-content pdf-modal">
+        <div class="pdf-actions">
+          <button class="btn-modal" onclick="closeModal('successModal')">关闭</button>
+          <button class="btn-modal primary" onclick="downloadPdf()">下载PDF</button>
+          <button class="btn-modal primary" onclick="openPdfNewWindow()">新窗口打开</button>
+        </div>
+        <iframe id="pdfViewer" src=""></iframe>
+      </div>
+    </div>
+
+    <!-- 模态框：查询失败 -->
+    <div id="errorModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header" style="color: var(--color-accent)">查询失败</div>
+        <div class="modal-body">您提供的身份信息有误或该公证书不存在，请核实后重新查询。</div>
+        <div class="modal-footer">
+          <button
+            class="btn-modal primary"
+            onclick="
+              closeModal('errorModal');
+              generateCaptcha();
+            "
+          >
+            重新查询
+          </button>
+          <button class="btn-modal" onclick="closeModal('errorModal')">关闭</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 配置
+      const API_BASE_URL = decodeURIComponent(
+        escape(atob("aHR0cHM6Ly9sc25wcmFwaS5jaGtqbm90YXJ5LmNvbS9hcGkvU2hhcmUvU2hhcmU=")),
+      );
+      let currentPdfUrl = null;
+      let currentCaptchaCode = "FXWWN"; // 模拟的当前验证码
+
+      // 初始化
+      document.addEventListener("DOMContentLoaded", () => {
+        generateCaptcha();
+
+        // 绑定表单提交
+        document.getElementById("queryForm").addEventListener("submit", handleQuery);
+
+        // 绑定验证码点击刷新
+        document.getElementById("captchaDisplay").addEventListener("click", generateCaptcha);
+      });
+
+      // 生成随机验证码（模拟）
+      function generateCaptcha() {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        let result = "";
+        for (let i = 0; i < 5; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        currentCaptchaCode = result;
+        document.getElementById("captchaDisplay").textContent = result;
+        document.getElementById("captchaInput").value = ""; // 清空输入框
+      }
+
+      // 查询核查函 - 参考原文件的fetchVerificationLetter方法
+      async function fetchVerificationLetter(params) {
+        const url = new URL(`${API_BASE_URL}/VerificationLetter`);
+
+        // 添加查询参数
+        url.searchParams.append("NotarizationNo", params.NotarizationNo);
+        url.searchParams.append("ApplicantName", params.ApplicantName);
+        url.searchParams.append("IdNumber", params.IdNumber);
+
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // 假设返回的是JSON，包含pdfUrl字段
+        const data = await response.json();
+        if (data.code === 200) {
+          return data.data;
+        } else {
+          throw new Error(result.message || "查询失败");
+        }
+      }
+
+      // 处理查询逻辑
+      async function handleQuery(e) {
+        e.preventDefault();
+
+        // 获取表单数据
+        const notarizationNo = document.getElementById("NotarizationNo").value.trim();
+        const applicantName = document.getElementById("ApplicantName").value.trim();
+        const idNumber = document.getElementById("IdNumber").value.trim();
+        const captchaInput = document.getElementById("captchaInput").value.trim();
+
+        // 简单验证
+        if (!notarizationNo || !applicantName || !idNumber || !captchaInput) {
+          alert("请填写完整信息");
+          return;
+        }
+
+        // 验证码校验 (模拟)
+        if (captchaInput.toUpperCase() !== currentCaptchaCode) {
+          alert("验证码错误");
+          generateCaptcha();
+          return;
+        }
+
+        // 显示加载中
+        showModal("loadingModal");
+
+        try {
+          // 调用查询方法
+          const pdfUrl = await fetchVerificationLetter({
+            NotarizationNo: notarizationNo,
+            ApplicantName: applicantName,
+            IdNumber: idNumber,
+          });
+          console.log(pdfUrl, "pdfUrl");
+
+          // 查询成功，处理PDF URL
+          handleSuccess(pdfUrl);
+        } catch (error) {
+          console.error("Query failed:", error);
+          closeModal("loadingModal");
+          showModal("errorModal");
+          generateCaptcha(); // 失败后刷新验证码
+        }
+      }
+
+      // 处理成功响应
+      function handleSuccess(pdfUrl) {
+        closeModal("loadingModal");
+
+        // 保存PDF URL
+        currentPdfUrl = pdfUrl;
+
+        // 设置iframe src
+        document.getElementById("pdfViewer").src = currentPdfUrl;
+
+        // 显示成功模态框
+        showModal("successModal");
+      }
+
+      // 下载 PDF
+      async function downloadPdf() {
+        if (!currentPdfUrl) return;
+        try {
+          const downloadModal = document.createElement("div");
+          const fileName = `债务履行核查函_${new Date().getTime()}.pdf`;
+          downloadModal.innerHTML = `<div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 9999;"><div style="background: white; padding: 20px; border-radius: 8px; text-align: center; min-width: 200px;"><div class="loading-spinner"style="margin: 0 auto;"></div><h3 style="margin: 10px 0 5px 0; color: #333;">正在下载PDF文件...</h3><p style="color: #666; font-size: 12px;">请稍候，文件正在下载中</p></div></div>`;
+          document.body.appendChild(downloadModal);
+          const response = await fetch(currentPdfUrl, { method: "GET", mode: "cors", credentials: "same-origin" });
+          if (!response.ok) {
+            throw new Error(`下载失败:${response.status}${response.statusText}`);
+          }
+          const blob = await response.blob();
+          const blobUrl = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = blobUrl;
+          link.download = fileName;
+          link.style.display = "none";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(blobUrl);
+          document.body.removeChild(downloadModal);
+        } catch (error) {
+          console.error("下载失败:", error);
+          alert("文件下载失败: " + error.message);
+          const modal = document.querySelector(
+            '[style*="position: fixed; top: 0; left: 0; width: 100%; height: 100%"]',
+          );
+          if (modal) {
+            document.body.removeChild(modal);
+          }
+        }
+      }
+
+      // 新窗口打开 PDF
+      function openPdfNewWindow() {
+        if (!currentPdfUrl) return;
+        window.open(currentPdfUrl, "_blank");
+      }
+
+      // 模态框控制
+      function showModal(id) {
+        document.getElementById(id).style.display = "flex";
+      }
+
+      function closeModal(id) {
+        document.getElementById(id).style.display = "none";
+      }
+
+      // 点击遮罩层关闭 (可选)
+      document.querySelectorAll(".modal-overlay").forEach((modal) => {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal && modal.id !== "loadingModal") {
+            modal.style.display = "none";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
