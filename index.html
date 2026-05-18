@@ -638,6 +638,7 @@
         }
       }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
   </head>
   <body>
     <header>
@@ -851,6 +852,26 @@
       </div>
     </div>
 
+    <!-- 模态框：请求超时 -->
+    <div id="timeoutModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header" style="color: var(--color-accent)">请求超时</div>
+        <div class="modal-body">网络连接失败，请检查网络后重试。</div>
+        <div class="modal-footer">
+          <button
+            class="btn-modal primary"
+            onclick="
+              closeModal('timeoutModal');
+              generateCaptcha();
+            "
+          >
+            重新查询
+          </button>
+          <button class="btn-modal" onclick="closeModal('timeoutModal')">关闭</button>
+        </div>
+      </div>
+    </div>
+
     <script>
       // 配置项：请替换为实际API地址
       const API_BASE_URL = decodeURIComponent(
@@ -881,19 +902,23 @@
         document.getElementById("captchaInput").value = "";
       }
 
-      // 核心查询方法：返回 pdfUrl
       async function fetchVerificationLetter(params) {
-        const url = new URL(`${API_BASE_URL}/VerificationLetter`);
-        url.searchParams.append("NotarizationNo", params.NotarizationNo);
-        url.searchParams.append("ApplicantName", params.ApplicantName);
-        url.searchParams.append("IdNumber", params.IdNumber);
-
-        const response = await fetch(url, { method: "GET" });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const data = await response.json();
-        if (!data.data) throw new Error("未返回PDF地址");
-        return data.data;
+        try {
+          const response = await axios.get(`${API_BASE_URL}/VerificationLetter`, {
+            params: params,
+            timeout: 600000, // 10 分钟 = 600,000 毫秒
+          });
+          if (!response.data?.data) {
+            throw new Error("未返回PDF地址");
+          }
+          return response.data.data;
+        } catch (error) {
+          // 判断是否为超时错误
+          if (error.code === "ECONNABORTED" || error.message === "Network Error") {
+            throw new Error("TIMEOUT"); // 抛出特定标识
+          }
+          throw error; // 其他错误原样抛出
+        }
       }
 
       async function handleQuery(e) {
@@ -925,8 +950,13 @@
         } catch (error) {
           console.error("Query failed:", error);
           closeModal("loadingModal");
-          showModal("errorModal");
-          generateCaptcha();
+          // 👇 关键：区分超时和其他错误
+          if (error.message === "TIMEOUT") {
+            showModal("timeoutModal");
+          } else {
+            showModal("errorModal");
+            generateCaptcha(); // 非超时错误才刷新验证码（可选）
+          }
         }
       }
 
